@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modbee Control Panel</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Modbee Control Panel</h1>
+    <div class="section">
+      <h2>Network Status</h2>
+      <p>Mode: <span id="network-mode">AP</span></p>
+      <p>SSID: <span id="network-ssid">ModbeeAP</span></p>
+      <p>IP: <span id="network-ip">192.168.4.1</span></p>
+      <h3>Connect to Wi-Fi</h3>
+      <form id="wifi-form">
+        <label for="ssid">SSID:</label>
+        <input type="text" id="ssid" name="ssid" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Connect</button>
+      </form>
+      <p id="wifi-status"></p>
+    </div>
+    <div class="section">
+      <h2>I/O Status</h2>
+      <h3>Digital Inputs</h3>
+      <div class="io-grid">
+        <div>DI01: <span id="di01">0</span></div>
+        <div>DI02: <span id="di02">0</span></div>
+        <div>DI03: <span id="di03">0</span></div>
+        <div>DI04: <span id="di04">0</span></div>
+        <div>DI05: <span id="di05">0</span></div>
+        <div>DI06: <span id="di06">0</span></div>
+        <div>DI07: <span id="di07">0</span></div>
+        <div>DI08: <span id="di08">0</span></div>
+      </div>
+      <h3>Digital Outputs</h3>
+      <div class="io-grid">
+        <div>DO01: <span id="do01">0</span></div>
+        <div>DO02: <span id="do02">0</span></div>
+        <div>DO03: <span id="do03">0</span></div>
+        <div>DO04: <span id="do04">0</span></div>
+        <div>DO05: <span id="do05">0</span></div>
+        <div>DO06: <span id="do06">0</span></div>
+        <div>DO07: <span id="do07">0</span></div>
+        <div>DO08: <span id="do08">0</span></div>
+      </div>
+      <h3>Analog Inputs (Scaled, mV)</h3>
+      <div class="io-grid">
+        <div>AI01: <span id="ai01">0</span></div>
+        <div>AI02: <span id="ai02">0</span></div>
+        <div>AI03: <span id="ai03">0</span></div>
+        <div>AI04: <span id="ai04">0</span></div>
+      </div>
+      <h3>Analog Outputs (Scaled, mV)</h3>
+      <div class="io-grid">
+        <div>AO01: <span id="ao01">0</span></div>
+        <div>AO02: <span id="ao02">0</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Calibration</h2>
+      <h3>ADC Calibration</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th>Zero Offset</th>
+            <th>Low</th>
+            <th>High</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AI01</td>
+            <td><input type="number" id="adc_zero_0" value="0"></td>
+            <td><input type="number" id="adc_low_0" value="0"></td>
+            <td><input type="number" id="adc_high_0" value="32767"></td>
+          </tr>
+          <tr>
+            <td>AI02</td>
+            <td><input type="number" id="adc_zero_1" value="0"></td>
+            <td><input type="number" id="adc_low_1" value="0"></td>
+            <td><input type="number" id="adc_high_1" value="32767"></td>
+          </tr>
+          <tr>
+            <td>AI03</td>
+            <td><input type="number" id="adc_zero_2" value="0"></td>
+            <td><input type="number" id="adc_low_2" value="0"></td>
+            <td><input type="number" id="adc_high_2" value="32767"></td>
+          </tr>
+          <tr>
+            <td>AI04</td>
+            <td><input type="number" id="adc_zero_3" value="0"></td>
+            <td><input type="number" id="adc_low_3" value="0"></td>
+            <td><input type="number" id="adc_high_3" value="32767"></td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>DAC Calibration</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Channel</th>
+            <th>Zero Offset</th>
+            <th>Low</th>
+            <th>High</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AO01</td>
+            <td><input type="number" id="dac_zero_0" value="0"></td>
+            <td><input type="number" id="dac_low_0" value="0"></td>
+            <td><input type="number" id="dac_high_0" value="32767"></td>
+          </tr>
+          <tr>
+            <td>AO02</td>
+            <td><input type="number" id="dac_zero_1" value="0"></td>
+            <td><input type="number" id="dac_low_1" value="0"></td>
+            <td><input type="number" id="dac_high_1" value="32767"></td>
+          </tr>
+        </tbody>
+      </table>
+      <button onclick="saveCalibration()">Save Calibration</button>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

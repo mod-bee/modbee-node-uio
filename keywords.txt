@@ -1,0 +1,93 @@
+# ModBee Node-UIO Hardware Control Library
+# Arduino Keywords File
+
+# Main Class
+ESP32Modbee	KEYWORD1
+
+# Core Methods
+begin	KEYWORD2
+update	KEYWORD2
+
+# Configuration Methods
+setADCMode	KEYWORD2
+setDACMode	KEYWORD2
+setCalibrationOffset	KEYWORD2
+getCalibrationOffset	KEYWORD2
+
+# Modbus Methods
+readCoil	KEYWORD2
+readCoils	KEYWORD2
+readIsts	KEYWORD2
+readIreg	KEYWORD2
+readIregs	KEYWORD2
+readHreg	KEYWORD2
+readHregs	KEYWORD2
+writeCoil	KEYWORD2
+writeCoils	KEYWORD2
+writeHreg	KEYWORD2
+writeHregs	KEYWORD2
+
+# Digital Input Channels
+DI01	LITERAL1
+DI02	LITERAL1
+DI03	LITERAL1
+DI04	LITERAL1
+DI05	LITERAL1
+DI06	LITERAL1
+DI07	LITERAL1
+DI08	LITERAL1
+
+# Digital Output Channels
+DO01	LITERAL1
+DO02	LITERAL1
+DO03	LITERAL1
+DO04	LITERAL1
+DO05	LITERAL1
+DO06	LITERAL1
+DO07	LITERAL1
+DO08	LITERAL1
+
+# Analog Input Channels (Raw)
+AI01	LITERAL1
+AI02	LITERAL1
+AI03	LITERAL1
+AI04	LITERAL1
+
+# Analog Output Channels (Raw)
+AO01	LITERAL1
+AO02	LITERAL1
+
+# Analog Input Channels (Scaled/Calibrated)
+AI01_Scaled	LITERAL1
+AI02_Scaled	LITERAL1
+AI03_Scaled	LITERAL1
+AI04_Scaled	LITERAL1
+
+# Analog Output Channels (Scaled/Calibrated)
+AO01_Scaled	LITERAL1
+AO02_Scaled	LITERAL1
+
+# Analog I/O Configuration
+MODE_VOLTAGE	LITERAL1
+MODE_CURRENT	LITERAL1
+
+# Modbus Operating Modes
+MB_MASTER	LITERAL1
+MB_SLAVE	LITERAL1
+MB_NONE	LITERAL1
+MB_MODE	LITERAL1
+
+# Modbus Network Properties
+modbusID	LITERAL1
+isMaster	LITERAL1
+mb	LITERAL1
+
+# ModBee Protocol
+modbeeID	LITERAL1
+ModbeeProtocol	KEYWORD1
+
+# RS485 Serial Communication
+Serial1	LITERAL1
+Serial2	LITERAL1
+baudrate	LITERAL1
+SERIAL_8N1	LITERAL1
