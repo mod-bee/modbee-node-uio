@@ -51,6 +51,8 @@ A powerful, open-source industrial IoT controller built on the **ESP32-S3** plat
 | **Network Interface** | RS485 via hardware serial (2x UART) |
 | **Storage** | 4 MB Flash + LittleFS for configuration |
 | **Power** | USB-C or external 5 - 24V supply |
+| **Dimensions (L × W × H)** | 118 × 58 × 45 mm | Compact form factor for portable applications |
+| **Mounting** | DIN Rail Mount | Compatible with standard 35 mm DIN rail systems |
 
 ## 🔌 I/O Details
 
