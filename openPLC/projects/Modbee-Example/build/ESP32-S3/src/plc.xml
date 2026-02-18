@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://www.plcopen.org/xml/tc6_0201" xmlns:xsd="http://www.w3.org/2001/XMLSchema-instance" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:ns1="http://www.plcopen.org/xml/tc6_0201">
+  <fileHeader companyName="Unknown" productName="Unnamed" productVersion="1" creationDateTime="2026-02-18T16:41:56"/>
+  <contentHeader name="Unnamed" modificationDateTime="2026-02-18T16:41:56">
+    <coordinateInfo>
+      <fbd>
+        <scaling x="16" y="16"/>
+      </fbd>
+      <ld>
+        <scaling x="16" y="16"/>
+      </ld>
+      <sfc>
+        <scaling x="16" y="16"/>
+      </sfc>
+    </coordinateInfo>
+  </contentHeader>
+  <types>
+    <dataTypes/>
+    <pous>
+      <pou name="MODBEE_CONFIG" pouType="functionBlock">
+        <interface>
+          <localVars>
+            <variable name="hasBeenInitialized">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml:p><![CDATA[{{
+MODBEE_CONFIG_VARS vars;
+}}
+if hasBeenInitialized = False then
+{{
+modbee_config_setup(&vars);
+}}
+hasBeenInitialized := True;
+end_if;
+{{
+modbee_config_loop(&vars);
+}}]]></xhtml:p>
+          </ST>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+      <pou name="MODBEE_INPUTS" pouType="functionBlock">
+        <interface>
+          <outputVars>
+            <variable name="DX01">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DX02">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DX03">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DX04">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DX05">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DX06">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DX07">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DX08">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="AX01_Scaled">
+              <type>
+                <REAL/>
+              </type>
+            </variable>
+            <variable name="AX02_Scaled">
+              <type>
+                <REAL/>
+              </type>
+            </variable>
+            <variable name="AX03_Scaled">
+              <type>
+                <REAL/>
+              </type>
+            </variable>
+            <variable name="AX04_Scaled">
+              <type>
+                <REAL/>
+              </type>
+            </variable>
+          </outputVars>
+          <localVars>
+            <variable name="hasBeenInitialized">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml:p><![CDATA[{{
+MODBEE_INPUTS_VARS vars;
+vars.DX01 = &data__->DX01.value;
+vars.DX02 = &data__->DX02.value;
+vars.DX03 = &data__->DX03.value;
+vars.DX04 = &data__->DX04.value;
+vars.DX05 = &data__->DX05.value;
+vars.DX06 = &data__->DX06.value;
+vars.DX07 = &data__->DX07.value;
+vars.DX08 = &data__->DX08.value;
+vars.AX01_SCALED = &data__->AX01_SCALED.value;
+vars.AX02_SCALED = &data__->AX02_SCALED.value;
+vars.AX03_SCALED = &data__->AX03_SCALED.value;
+vars.AX04_SCALED = &data__->AX04_SCALED.value;
+}}
+if hasBeenInitialized = False then
+{{
+modbee_inputs_setup(&vars);
+}}
+hasBeenInitialized := True;
+end_if;
+{{
+modbee_inputs_loop(&vars);
+}}]]></xhtml:p>
+          </ST>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+      <pou name="MODBEE_OUTPUTS" pouType="functionBlock">
+        <interface>
+          <inputVars>
+            <variable name="DY01">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DY02">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DY03">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DY04">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DY05">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DY06">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DY07">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="DY08">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="AY01_Scaled">
+              <type>
+                <REAL/>
+              </type>
+            </variable>
+            <variable name="AY02_Scaled">
+              <type>
+                <REAL/>
+              </type>
+            </variable>
+          </inputVars>
+          <localVars>
+            <variable name="hasBeenInitialized">
+              <type>
+                <BOOL/>
+              </type>
+              <initialValue>
+                <simpleValue value="0"/>
+              </initialValue>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <ST>
+            <xhtml:p><![CDATA[{{
+MODBEE_OUTPUTS_VARS vars;
+vars.DY01 = &data__->DY01.value;
+vars.DY02 = &data__->DY02.value;
+vars.DY03 = &data__->DY03.value;
+vars.DY04 = &data__->DY04.value;
+vars.DY05 = &data__->DY05.value;
+vars.DY06 = &data__->DY06.value;
+vars.DY07 = &data__->DY07.value;
+vars.DY08 = &data__->DY08.value;
+vars.AY01_SCALED = &data__->AY01_SCALED.value;
+vars.AY02_SCALED = &data__->AY02_SCALED.value;
+}}
+if hasBeenInitialized = False then
+{{
+modbee_outputs_setup(&vars);
+}}
+hasBeenInitialized := True;
+end_if;
+{{
+modbee_outputs_loop(&vars);
+}}]]></xhtml:p>
+          </ST>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+      <pou name="main" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="MODBEE_INPUTS0">
+              <type>
+                <derived name="MODBEE_INPUTS"/>
+              </type>
+            </variable>
+            <variable name="MODBEE_OUTPUTS0">
+              <type>
+                <derived name="MODBEE_OUTPUTS"/>
+              </type>
+            </variable>
+            <variable name="start">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="stop">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+            <variable name="run">
+              <type>
+                <BOOL/>
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <LD>
+            <leftPowerRail localId="6739411" width="3" height="40">
+              <position x="0" y="30"/>
+              <connectionPointOut formalParameter="">
+                <relPosition x="3" y="20"/>
+              </connectionPointOut>
+            </leftPowerRail>
+            <leftPowerRail localId="2003023" width="3" height="40">
+              <position x="0" y="604"/>
+              <connectionPointOut formalParameter="">
+                <relPosition x="3" y="20"/>
+              </connectionPointOut>
+            </leftPowerRail>
+            <leftPowerRail localId="10083399" width="3" height="40">
+              <position x="0" y="778"/>
+              <connectionPointOut formalParameter="">
+                <relPosition x="3" y="20"/>
+              </connectionPointOut>
+            </leftPowerRail>
+            <rightPowerRail localId="4744842" width="3" height="40">
+              <position x="577" y="30"/>
+              <connectionPointIn>
+                <relPosition x="3" y="20"/>
+                <connection refLocalId="6616654" formalParameter="ENO">
+                  <position x="297" y="50"/>
+                  <position x="317" y="50"/>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+            <rightPowerRail localId="7546059" width="3" height="40">
+              <position x="442" y="604"/>
+              <connectionPointIn>
+                <relPosition x="3" y="20"/>
+                <connection refLocalId="5001129" formalParameter="output">
+                  <position x="297" y="624"/>
+                  <position x="332" y="624"/>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+            <rightPowerRail localId="1171885" width="3" height="40">
+              <position x="589" y="778"/>
+              <connectionPointIn>
+                <relPosition x="3" y="20"/>
+                <connection refLocalId="4563959" formalParameter="ENO">
+                  <position x="297" y="798"/>
+                  <position x="329" y="798"/>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+            <block localId="6616654" typeName="MODBEE_INPUTS" instanceName="MODBEE_INPUTS0" width="174" height="540" executionOrderId="0">
+              <position x="143" y="14"/>
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <relPosition x="0" y="36"/>
+                    <connection refLocalId="6739411" formalParameter="left-rail">
+                      <position x="143" y="50"/>
+                      <position x="3" y="50"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables/>
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut>
+                    <relPosition x="174" y="36"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX01">
+                  <connectionPointOut>
+                    <relPosition x="174" y="76"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX02">
+                  <connectionPointOut>
+                    <relPosition x="174" y="116"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX03">
+                  <connectionPointOut>
+                    <relPosition x="174" y="156"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX04">
+                  <connectionPointOut>
+                    <relPosition x="174" y="196"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX05">
+                  <connectionPointOut>
+                    <relPosition x="174" y="236"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX06">
+                  <connectionPointOut>
+                    <relPosition x="174" y="276"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX07">
+                  <connectionPointOut>
+                    <relPosition x="174" y="316"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="DX08">
+                  <connectionPointOut>
+                    <relPosition x="174" y="356"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="AX01_Scaled">
+                  <connectionPointOut>
+                    <relPosition x="174" y="396"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="AX02_Scaled">
+                  <connectionPointOut>
+                    <relPosition x="174" y="436"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="AX03_Scaled">
+                  <connectionPointOut>
+                    <relPosition x="174" y="476"/>
+                  </connectionPointOut>
+                </variable>
+                <variable formalParameter="AX04_Scaled">
+                  <connectionPointOut>
+                    <relPosition x="174" y="516"/>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+            </block>
+            <block localId="4563959" typeName="MODBEE_OUTPUTS" instanceName="MODBEE_OUTPUTS0" width="186" height="460" executionOrderId="0">
+              <position x="143" y="762"/>
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <relPosition x="0" y="36"/>
+                    <connection refLocalId="10083399" formalParameter="left-rail">
+                      <position x="143" y="798"/>
+                      <position x="3" y="798"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY01">
+                  <connectionPointIn>
+                    <relPosition x="0" y="76"/>
+                    <connection refLocalId="7283231">
+                      <position x="143" y="838"/>
+                      <position x="193" y="838"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY02">
+                  <connectionPointIn>
+                    <relPosition x="0" y="116"/>
+                    <connection refLocalId="8346592">
+                      <position x="143" y="878"/>
+                      <position x="193" y="878"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY03">
+                  <connectionPointIn>
+                    <relPosition x="0" y="156"/>
+                    <connection refLocalId="7192473">
+                      <position x="143" y="918"/>
+                      <position x="193" y="918"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY04">
+                  <connectionPointIn>
+                    <relPosition x="0" y="196"/>
+                    <connection refLocalId="7332210">
+                      <position x="143" y="958"/>
+                      <position x="193" y="958"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY05">
+                  <connectionPointIn>
+                    <relPosition x="0" y="236"/>
+                    <connection refLocalId="7318113">
+                      <position x="143" y="998"/>
+                      <position x="193" y="998"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY06">
+                  <connectionPointIn>
+                    <relPosition x="0" y="276"/>
+                    <connection refLocalId="6820545">
+                      <position x="143" y="1038"/>
+                      <position x="193" y="1038"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY07">
+                  <connectionPointIn>
+                    <relPosition x="0" y="316"/>
+                    <connection refLocalId="10206701">
+                      <position x="143" y="1078"/>
+                      <position x="193" y="1078"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="DY08">
+                  <connectionPointIn>
+                    <relPosition x="0" y="356"/>
+                    <connection refLocalId="10190539">
+                      <position x="143" y="1118"/>
+                      <position x="193" y="1118"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="AY01_Scaled">
+                  <connectionPointIn>
+                    <relPosition x="0" y="396"/>
+                    <connection refLocalId="2066275">
+                      <position x="143" y="1158"/>
+                      <position x="193" y="1158"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+                <variable formalParameter="AY02_Scaled">
+                  <connectionPointIn>
+                    <relPosition x="0" y="436"/>
+                    <connection refLocalId="6348199">
+                      <position x="143" y="1198"/>
+                      <position x="193" y="1198"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables/>
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut>
+                    <relPosition x="186" y="36"/>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+            </block>
+            <contact localId="2575801" negated="false" width="24" height="24">
+              <position x="72" y="612"/>
+              <connectionPointIn>
+                <relPosition x="0" y="12"/>
+                <connection refLocalId="2003023" formalParameter="left-rail">
+                  <position x="72" y="624"/>
+                  <position x="3" y="624"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut>
+                <relPosition x="24" y="12"/>
+              </connectionPointOut>
+              <variable>start</variable>
+            </contact>
+            <contact localId="4916078" negated="false" width="24" height="24">
+              <position x="72" y="704"/>
+              <connectionPointIn>
+                <relPosition x="0" y="12"/>
+                <connection refLocalId="2003023" formalParameter="left-rail">
+                  <position x="72" y="716"/>
+                  <position x="27" y="716"/>
+                  <position x="27" y="624"/>
+                  <position x="3" y="624"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut>
+                <relPosition x="24" y="12"/>
+              </connectionPointOut>
+              <variable>run</variable>
+            </contact>
+            <contact localId="1150125" negated="true" width="24" height="24">
+              <position x="190" y="612"/>
+              <connectionPointIn>
+                <relPosition x="0" y="12"/>
+                <connection refLocalId="2575801" formalParameter="output">
+                  <position x="190" y="624"/>
+                  <position x="96" y="624"/>
+                </connection>
+                <connection refLocalId="4916078" formalParameter="output">
+                  <position x="190" y="624"/>
+                  <position x="145" y="624"/>
+                  <position x="145" y="716"/>
+                  <position x="96" y="716"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut>
+                <relPosition x="24" y="12"/>
+              </connectionPointOut>
+              <variable>stop</variable>
+            </contact>
+            <coil localId="5001129" negated="false" width="28" height="24">
+              <position x="304" y="612"/>
+              <connectionPointIn>
+                <relPosition x="0" y="12"/>
+                <connection refLocalId="1150125" formalParameter="output">
+                  <position x="304" y="624"/>
+                  <position x="214" y="624"/>
+                </connection>
+              </connectionPointIn>
+              <connectionPointOut>
+                <relPosition x="28" y="12"/>
+              </connectionPointOut>
+              <variable>run</variable>
+            </coil>
+            <inVariable localId="7283231" width="80" height="32" negated="false">
+              <position x="33" y="822"/>
+              <connectionPointOut>
+                <relPosition x="80" y="16"/>
+              </connectionPointOut>
+              <expression>run</expression>
+            </inVariable>
+            <outVariable localId="9608992" width="80" height="32" negated="false">
+              <position x="347" y="74"/>
+              <connectionPointIn>
+                <relPosition x="0" y="16"/>
+                <connection refLocalId="6616654" formalParameter="DX01">
+                  <position x="347" y="90"/>
+                  <position x="317" y="50"/>
+                </connection>
+              </connectionPointIn>
+              <expression>start</expression>
+            </outVariable>
+            <outVariable localId="6089062" width="80" height="32" negated="false">
+              <position x="347" y="114"/>
+              <connectionPointIn>
+                <relPosition x="0" y="16"/>
+                <connection refLocalId="6616654" formalParameter="DX02">
+                  <position x="347" y="130"/>
+                  <position x="317" y="50"/>
+                </connection>
+              </connectionPointIn>
+              <expression>stop</expression>
+            </outVariable>
+          </LD>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+      <pou name="modbee" pouType="program">
+        <interface>
+          <localVars>
+            <variable name="MODBEE_CONFIG0">
+              <type>
+                <derived name="MODBEE_CONFIG"/>
+              </type>
+            </variable>
+          </localVars>
+        </interface>
+        <body>
+          <LD>
+            <leftPowerRail localId="2738643" width="3" height="40">
+              <position x="0" y="30"/>
+              <connectionPointOut formalParameter="">
+                <relPosition x="3" y="20"/>
+              </connectionPointOut>
+            </leftPowerRail>
+            <rightPowerRail localId="5702250" width="3" height="40">
+              <position x="559" y="30"/>
+              <connectionPointIn>
+                <relPosition x="3" y="20"/>
+                <connection refLocalId="1958902" formalParameter="ENO">
+                  <position x="297" y="50"/>
+                  <position x="299" y="50"/>
+                </connection>
+              </connectionPointIn>
+            </rightPowerRail>
+            <block localId="1958902" typeName="MODBEE_CONFIG" instanceName="MODBEE_CONFIG0" width="156" height="60" executionOrderId="0">
+              <position x="143" y="14"/>
+              <inputVariables>
+                <variable formalParameter="EN">
+                  <connectionPointIn>
+                    <relPosition x="0" y="36"/>
+                    <connection refLocalId="2738643" formalParameter="left-rail">
+                      <position x="143" y="50"/>
+                      <position x="3" y="50"/>
+                    </connection>
+                  </connectionPointIn>
+                </variable>
+              </inputVariables>
+              <inOutVariables/>
+              <outputVariables>
+                <variable formalParameter="ENO">
+                  <connectionPointOut>
+                    <relPosition x="156" y="36"/>
+                  </connectionPointOut>
+                </variable>
+              </outputVariables>
+            </block>
+          </LD>
+        </body>
+        <documentation>
+          <xhtml:p><![CDATA[ ]]></xhtml:p>
+        </documentation>
+      </pou>
+    </pous>
+  </types>
+  <instances>
+    <configurations>
+      <configuration name="Config0">
+        <resource name="Res0">
+          <task name="task0" priority="1" interval="T#1ms">
+            <pouInstance name="instance0" typeName="main"/>
+          </task>
+          <task name="Task1" priority="0" interval="T#1ms">
+            <pouInstance name="instance1" typeName="modbee"/>
+          </task>
+        </resource>
+      </configuration>
+    </configurations>
+  </instances>
+</project>

@@ -1,0 +1,30 @@
+{
+  "deviceBoard": "ESP32-S3",
+  "communicationPort": "/dev/ttyACM0",
+  "compileOnly": false,
+  "communicationConfiguration": {
+    "modbusRTU": {
+      "rtuInterface": "Serial",
+      "rtuBaudRate": "115200",
+      "rtuSlaveId": 1,
+      "rtuRS485ENPin": null
+    },
+    "modbusTCP": {
+      "tcpInterface": "Wi-Fi",
+      "tcpMacAddress": "DE:AD:BE:EF:DE:AD",
+      "tcpWifiSSID": "nigga we got internet",
+      "tcpWifiPassword": "mudsluts",
+      "tcpStaticHostConfiguration": {
+        "ipAddress": "",
+        "dns": "",
+        "gateway": "",
+        "subnet": ""
+      }
+    },
+    "communicationPreferences": {
+      "enabledRTU": true,
+      "enabledTCP": false,
+      "enabledDHCP": true
+    }
+  }
+}

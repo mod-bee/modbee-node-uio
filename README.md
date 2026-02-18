@@ -169,6 +169,11 @@ Access the control panel at `http://192.168.4.1/` (default AP mode):
   - Complete code examples
   - Deployment checklist
 - **[docs/API_REFERENCE.md](docs/API_REFERENCE.md)** - Practical code examples and API reference
+- **[docs/OPENPLC.md](docs/OPENPLC.md)** - Integration guide for openPLC automation framework
+  - Setup instructions with two configuration options
+  - Function block reference and parameters
+  - Multi-device networking
+  - Example programs and best practices
 
 ## 📖 File Structure
 
@@ -179,7 +184,8 @@ modbee-node-uio/
 │   ├── GETTING_STARTED.md - Quick setup guide
 │   ├── HARDWARE.md - Hardware documentation
 │   ├── SOFTWARE.md - Software/API documentation
-│   └── API_REFERENCE.md - Practical code examples
+│   ├── API_REFERENCE.md - Practical code examples
+│   └── OPENPLC.md - openPLC framework integration
 ├── src/
 │   └── main.cpp - Main application
 ├── lib/
@@ -193,6 +199,10 @@ modbee-node-uio/
 │   ├── ADS1X15/ - 16-bit ADC driver
 │   ├── modbus-esp8266/ - Modbus RTU implementation
 │   └── (other libraries...)
+├── openPLC/
+│   ├── projects/
+│   │   └── Modbee-Test/ - Pre-configured test project
+│   └── function-blocks/ - IEC-61131 function blocks for openPLC
 ├── examples/
 │   ├── standalone-example.ino - Local control only
 │   ├── master-example.ino - Master multiple slaves
@@ -304,9 +314,10 @@ See [LICENSE](LICENSE) file for details.
 For issues, questions, or suggestions:
 1. Check [docs/HARDWARE.md](docs/HARDWARE.md) for hardware issues
 2. Check [docs/SOFTWARE.md](docs/SOFTWARE.md) for software/API questions
-3. Review [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for code examples
-3. Review [examples/](examples/) for working code
-4. Check troubleshooting sections in documentation
+3. Review [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for Arduino/C++ code examples
+4. Check [docs/OPENPLC.md](docs/OPENPLC.md) for openPLC integration questions
+5. Review [examples/](examples/) for working code
+6. Check troubleshooting sections in documentation
 
 ## 🎯 Use Cases
 
