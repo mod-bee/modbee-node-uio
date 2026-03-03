@@ -6,12 +6,9 @@
 // Initialize ESP32Modbee as master
 ESP32Modbee io(
   MB_MASTER,          // Modbus Mode
-  LED_PIN,            // RGB LED
-  37, 38,             // SDA, SCL
   18, 17,             // Modbus RX, TX
   1,                  // Modbus ID (not used in master)
   9600, SERIAL_8N1,   // Baudrate, serial config
-  &Serial1            // Serial port
 );
 
 // Slave configuration for one MB_MODBEE_NODE_UIO node (ID 1)
@@ -62,28 +59,28 @@ void pollSlaves() {
   for (uint8_t i = 0; i < NUM_SLAVES; i++) {
     uint8_t slaveId = slaveIDs[i];
 
-    // Read ISTS (8 DI)
+    // Read ISTS (8 DI) - addresses 100-107
     bool diData[8];
-    io.mb.readIsts(slaveId, 0, diData, 8);
+    io.mb.readIsts(slaveId, 100, diData, 8);
     for (uint8_t j = 0; j < 8; j++) {
       slaveDI[i][j] = diData[j];
     }
 
-    // Read IREG (4 AI, only need AI03, AI04)
+    // Read IREG (4 AI, only need AI03, AI04) - addresses 100-103
     uint16_t aiData[4];
-    io.mb.readIreg(slaveId, 0, aiData, 4);
+    io.mb.readIreg(slaveId, 100, aiData, 4);
     for (uint8_t j = 0; j < 4; j++) {
       slaveAI[i][j] = aiData[j];
     }
 
-    // Write COIL (8 DO)
+    // Write COIL (8 DO) - addresses 100-107
     for (uint8_t j = 0; j < 8; j++) {
-      io.mb.writeCoil(slaveId, j, slaveDO[i][j]);
+      io.mb.writeCoil(slaveId, 100 + j, slaveDO[i][j]);
     }
 
-    // Write HREG (2 AO)
+    // Write HREG (2 AO) - addresses 100-101
     for (uint8_t j = 0; j < 2; j++) {
-      io.mb.writeHreg(slaveId, j, slaveAO[i][j]);
+      io.mb.writeHreg(slaveId, 100 + j, slaveAO[i][j]);
     }
   }
 }

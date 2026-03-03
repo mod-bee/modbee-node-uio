@@ -4,20 +4,21 @@
 // STATIC VARIABLE DEFINITIONS
 // =============================================================================
 unsigned long ModBeeAPI::MODBEE_INTERFRAME_GAP_US        = 5000;   
-unsigned long ModBeeAPI::MODBEE_OPERATION_TIMEOUT_MS     = 100;
-unsigned long ModBeeAPI::MODBEE_RESPONSE_TIMEOUT_MS      = 100;
+unsigned long ModBeeAPI::MODBEE_OPERATION_TIMEOUT_MS     = 250;
+unsigned long ModBeeAPI::MODBEE_RESPONSE_TIMEOUT_MS      = 250;
+unsigned long ModBeeAPI::MODBEE_READ_TIMEOUT_MS          = 250;
 unsigned long ModBeeAPI::MODBEE_RETRY_DELAY_MS           = 100;
 unsigned long ModBeeAPI::MODBEE_MAX_RETRIES              = 2;
 
 // PROTOCOL TIMING ONLY
 unsigned long ModBeeAPI::INITIAL_LISTEN_PERIOD_MS        = 2000;  // Base initial listen time
-unsigned long ModBeeAPI::TOKEN_RESPONSE_TIMEOUT_MS       = 50;    // Token passing timeout
+unsigned long ModBeeAPI::TOKEN_RESPONSE_TIMEOUT_MS       = 200;   // Token passing timeout
 unsigned long ModBeeAPI::BASE_TIMEOUT                    = 100;  
-unsigned long ModBeeAPI::NODE_TIMEOUT_MS                 = 50;
+unsigned long ModBeeAPI::NODE_TIMEOUT_MS                 = 1000;
 
-unsigned long ModBeeAPI::MODBEE_TOKEN_RECLAIM_TIMEOUT    = 30;    // Token reclaim timeout (ms)
-unsigned long ModBeeAPI::MODBEE_JOIN_CYCLE_INTERVAL      = 50;    // Join invitation interval (ms)
-unsigned long ModBeeAPI::MODBEE_JOIN_RESPONSE_TIMEOUT    = 20;    // Join response wait time (ms)
+unsigned long ModBeeAPI::MODBEE_TOKEN_RECLAIM_TIMEOUT    = 500;   // Token reclaim timeout (ms)
+unsigned long ModBeeAPI::MODBEE_JOIN_CYCLE_INTERVAL      = 100;   // Join invitation interval (ms)
+unsigned long ModBeeAPI::MODBEE_JOIN_RESPONSE_TIMEOUT    = 200;   // Join response wait time (ms)
 
 int ModBeeAPI::MODBEE_MAX_NODES                          = 10;      // Maximum nodes allowed in network
 bool ModBeeAPI::enableFailSafe                           = false;
@@ -225,80 +226,82 @@ bool ModBeeAPI::removeIreg(uint16_t address) {
 // SINGLE VALUE FUNCTIONS
 // =============================================================================
 
-bool ModBeeAPI::readHreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc) {
-    return readHreg_impl(nodeID, offset, &value, 1, fc);
+uint32_t ModBeeAPI::readHreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readHreg_impl(nodeID, offset, &value, 1, fc, callback);
 }
 
-bool ModBeeAPI::readCoil(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc) {
-    return readCoil_impl(nodeID, offset, &value, 1, fc);
+uint32_t ModBeeAPI::readCoil(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readCoil_impl(nodeID, offset, &value, 1, fc, callback);
 }
 
-bool ModBeeAPI::readIreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc) {
-    return readIreg_impl(nodeID, offset, &value, 1, fc);
+uint32_t ModBeeAPI::readIreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readIreg_impl(nodeID, offset, &value, 1, fc, callback);
 }
 
-bool ModBeeAPI::readIsts(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc) {
-    return readIsts_impl(nodeID, offset, &value, 1, fc);
+uint32_t ModBeeAPI::readIsts(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readIsts_impl(nodeID, offset, &value, 1, fc, callback);
 }
 
-bool ModBeeAPI::writeHreg(uint8_t nodeID, uint16_t offset, int16_t value, uint8_t fc) {
-    return writeHreg_impl(nodeID, offset, &value, 1, fc);
+uint32_t ModBeeAPI::writeHreg(uint8_t nodeID, uint16_t offset, int16_t value, uint8_t fc, ModBeeCompletionCallback callback) {
+    return writeHreg_impl(nodeID, offset, &value, 1, fc, callback);
 }
 
-bool ModBeeAPI::writeCoil(uint8_t nodeID, uint16_t offset, bool value, uint8_t fc) {
-    return writeCoil_impl(nodeID, offset, &value, 1, fc);
+uint32_t ModBeeAPI::writeCoil(uint8_t nodeID, uint16_t offset, bool value, uint8_t fc, ModBeeCompletionCallback callback) {
+    return writeCoil_impl(nodeID, offset, &value, 1, fc, callback);
 }
 
 // =============================================================================
 // MANUAL FUNCTIONS - For dynamic arrays
 // =============================================================================
 
-bool ModBeeAPI::readHregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc) {
-    return readHreg_impl(nodeID, offset, values, numregs, fc);
+uint32_t ModBeeAPI::readHregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readHreg_impl(nodeID, offset, values, numregs, fc, callback);
 }
 
-bool ModBeeAPI::readCoilManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc) {
-    return readCoil_impl(nodeID, offset, values, numcoils, fc);
+uint32_t ModBeeAPI::readCoilManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readCoil_impl(nodeID, offset, values, numcoils, fc, callback);
 }
 
-bool ModBeeAPI::readIregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc) {
-    return readIreg_impl(nodeID, offset, values, numiregs, fc);
+uint32_t ModBeeAPI::readIregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readIreg_impl(nodeID, offset, values, numiregs, fc, callback);
 }
 
-bool ModBeeAPI::readIstsManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc) {
-    return readIsts_impl(nodeID, offset, values, numists, fc);
+uint32_t ModBeeAPI::readIstsManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc, ModBeeCompletionCallback callback) {
+    return readIsts_impl(nodeID, offset, values, numists, fc, callback);
 }
 
-bool ModBeeAPI::writeHregManual(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc) {
-    return writeHreg_impl(nodeID, offset, values, numregs, fc);
+uint32_t ModBeeAPI::writeHregManual(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc, ModBeeCompletionCallback callback) {
+    return writeHreg_impl(nodeID, offset, values, numregs, fc, callback);
 }
 
-bool ModBeeAPI::writeCoilManual(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc) {
-    return writeCoil_impl(nodeID, offset, values, numcoils, fc);
+uint32_t ModBeeAPI::writeCoilManual(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc, ModBeeCompletionCallback callback) {
+    return writeCoil_impl(nodeID, offset, values, numcoils, fc, callback);
 }
 
 // =============================================================================
 // IMPLEMENTATION METHODS - Called by templates and manual functions
 // =============================================================================
 
-bool ModBeeAPI::readHreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc) {
-    if (!_protocol || !values) return false;
+uint32_t ModBeeAPI::readHreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc, ModBeeCompletionCallback callback) {
+    if (!_protocol || !values) return 0;
     
     // Check if target node exists
     if (!isNodeKnown(nodeID)) {
-        return false;
+        return 0;
     }
     
     if (nodeID == _protocol->getNodeID()) {
-        // Local read
+        // Local read - immediate completion
         for (uint16_t i = 0; i < numregs; i++) {
             if (_protocol->getDataMap().hasHreg(offset + i)) {
                 values[i] = _protocol->getDataMap().getHreg(offset + i);
             } else {
-                return false; // Missing register
+                return 0; // Missing register
             }
         }
-        return true;
+        // For local operations, call callback immediately if provided
+        if (callback) callback(0); // Use 0 for local operations
+        return 0; // Local operations don't get operation IDs
     }
     
     // Remote read - direct response approach
@@ -309,7 +312,7 @@ bool ModBeeAPI::readHreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, 
     for (const auto& op : pendingOps) {
         if (op.destNodeID == nodeID && op.req.function == functionCode &&
             op.req.startAddr == offset && op.req.quantity == numregs) {
-            return false; // Already pending
+            return 0; // Already pending
         }
     }
     
@@ -329,32 +332,38 @@ bool ModBeeAPI::readHreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, 
     op.resultPtr = values;
     op.isArray = (numregs > 1);
     op.arraySize = numregs;
+    op.onComplete = callback;
     
-    _protocol->getOperations().addPendingOperation(op, *_protocol);
+    const uint32_t operationId = _protocol->getOperations().addPendingOperation(op, *_protocol);
+    if (operationId == 0) {
+        return 0;
+    }
     
-    MBEE_DEBUG_IO("ADDED: Direct response array operation - Node:%d FC:%02X Addr:%d Qty:%d", 
-        nodeID, functionCode, offset, numregs);
-    return false; // Queued, not immediate
+    MBEE_DEBUG_IO("ADDED: Direct response array operation ID:%u - Node:%d FC:%02X Addr:%d Qty:%d", 
+        operationId, nodeID, functionCode, offset, numregs);
+    return operationId; // Return the operation ID
 }
 
-bool ModBeeAPI::readCoil_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc) {
-    if (!_protocol || !values) return false;
+uint32_t ModBeeAPI::readCoil_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc, ModBeeCompletionCallback callback) {
+    if (!_protocol || !values) return 0;
     
     // Check if target node exists
     if (!isNodeKnown(nodeID)) {
-        return false;
+        return 0;
     }
     
     if (nodeID == _protocol->getNodeID()) {
-        // Local read
+        // Local read - immediate completion
         for (uint16_t i = 0; i < numcoils; i++) {
             if (_protocol->getDataMap().hasCoil(offset + i)) {
                 values[i] = _protocol->getDataMap().getCoil(offset + i);
             } else {
-                return false; // Missing coil
+                return 0; // Missing coil
             }
         }
-        return true;
+        // For local operations, call callback immediately if provided
+        if (callback) callback(0); // Use 0 for local operations
+        return 0; // Local operations don't get operation IDs
     }
     
     // Remote read - direct response approach
@@ -365,7 +374,7 @@ bool ModBeeAPI::readCoil_impl(uint8_t nodeID, uint16_t offset, bool* values, uin
     for (const auto& op : pendingOps) {
         if (op.destNodeID == nodeID && op.req.function == functionCode &&
             op.req.startAddr == offset && op.req.quantity == numcoils) {
-            return false; // Already pending
+            return 0; // Already pending
         }
     }
     
@@ -385,32 +394,38 @@ bool ModBeeAPI::readCoil_impl(uint8_t nodeID, uint16_t offset, bool* values, uin
     op.resultPtr = values;
     op.isArray = (numcoils > 1);
     op.arraySize = numcoils;
+    op.onComplete = callback;
     
-    _protocol->getOperations().addPendingOperation(op, *_protocol);
+    const uint32_t operationId = _protocol->getOperations().addPendingOperation(op, *_protocol);
+    if (operationId == 0) {
+        return 0;
+    }
     
-    MBEE_DEBUG_IO("ADDED: Direct response array operation - Node:%d FC:%02X Addr:%d Qty:%d", 
-        nodeID, functionCode, offset, numcoils);
-    return false; // Queued, not immediate
+    MBEE_DEBUG_IO("ADDED: Direct response array operation ID:%u - Node:%d FC:%02X Addr:%d Qty:%d", 
+        operationId, nodeID, functionCode, offset, numcoils);
+    return operationId; // Return the operation ID
 }
 
-bool ModBeeAPI::readIreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc) {
-    if (!_protocol || !values) return false;
+uint32_t ModBeeAPI::readIreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc, ModBeeCompletionCallback callback) {
+    if (!_protocol || !values) return 0;
     
     // Check if target node exists
     if (!isNodeKnown(nodeID)) {
-        return false;
+        return 0;
     }
     
     if (nodeID == _protocol->getNodeID()) {
-        // Local read
+        // Local read - immediate completion
         for (uint16_t i = 0; i < numiregs; i++) {
             if (_protocol->getDataMap().hasIreg(offset + i)) {
                 values[i] = _protocol->getDataMap().getIreg(offset + i);
             } else {
-                return false; // Missing register
+                return 0; // Missing register
             }
         }
-        return true;
+        // For local operations, call callback immediately if provided
+        if (callback) callback(0); // Use 0 for local operations
+        return 0; // Local operations don't get operation IDs
     }
     
     // Remote read - direct response approach
@@ -421,7 +436,7 @@ bool ModBeeAPI::readIreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, 
     for (const auto& op : pendingOps) {
         if (op.destNodeID == nodeID && op.req.function == functionCode &&
             op.req.startAddr == offset && op.req.quantity == numiregs) {
-            return false; // Already pending
+            return 0; // Already pending
         }
     }
     
@@ -441,32 +456,38 @@ bool ModBeeAPI::readIreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, 
     op.resultPtr = values;
     op.isArray = (numiregs > 1);
     op.arraySize = numiregs;
+    op.onComplete = callback;
     
-    _protocol->getOperations().addPendingOperation(op, *_protocol);
+    const uint32_t operationId = _protocol->getOperations().addPendingOperation(op, *_protocol);
+    if (operationId == 0) {
+        return 0;
+    }
     
-    MBEE_DEBUG_IO("ADDED: Direct response array operation - Node:%d FC:%02X Addr:%d Qty:%d", 
-        nodeID, functionCode, offset, numiregs);
-    return false; // Queued, not immediate
+    MBEE_DEBUG_IO("ADDED: Direct response array operation ID:%u - Node:%d FC:%02X Addr:%d Qty:%d", 
+        operationId, nodeID, functionCode, offset, numiregs);
+    return operationId; // Return the operation ID
 }
 
-bool ModBeeAPI::readIsts_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc) {
-    if (!_protocol || !values) return false;
+uint32_t ModBeeAPI::readIsts_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc, ModBeeCompletionCallback callback) {
+    if (!_protocol || !values) return 0;
     
     // Check if target node exists
     if (!isNodeKnown(nodeID)) {
-        return false;
+        return 0;
     }
     
     if (nodeID == _protocol->getNodeID()) {
-        // Local read
+        // Local read - immediate completion
         for (uint16_t i = 0; i < numists; i++) {
             if (_protocol->getDataMap().hasIsts(offset + i)) {
                 values[i] = _protocol->getDataMap().getIsts(offset + i);
             } else {
-                return false; // Missing input
+                return 0; // Missing input
             }
         }
-        return true;
+        // For local operations, call callback immediately if provided
+        if (callback) callback(0); // Use 0 for local operations
+        return 0; // Local operations don't get operation IDs
     }
     
     // Remote read - direct response approach
@@ -477,7 +498,7 @@ bool ModBeeAPI::readIsts_impl(uint8_t nodeID, uint16_t offset, bool* values, uin
     for (const auto& op : pendingOps) {
         if (op.destNodeID == nodeID && op.req.function == functionCode &&
             op.req.startAddr == offset && op.req.quantity == numists) {
-            return false; // Already pending
+            return 0; // Already pending
         }
     }
     
@@ -497,30 +518,36 @@ bool ModBeeAPI::readIsts_impl(uint8_t nodeID, uint16_t offset, bool* values, uin
     op.resultPtr = values;
     op.isArray = (numists > 1);
     op.arraySize = numists;
+    op.onComplete = callback;
     
-    _protocol->getOperations().addPendingOperation(op, *_protocol);
+    const uint32_t operationId = _protocol->getOperations().addPendingOperation(op, *_protocol);
+    if (operationId == 0) {
+        return 0;
+    }
     
-    MBEE_DEBUG_IO("ADDED: Direct response array operation - Node:%d FC:%02X Addr:%d Qty:%d", 
-        nodeID, functionCode, offset, numists);
-    return false; // Queued, not immediate
+    MBEE_DEBUG_IO("ADDED: Direct response array operation ID:%u - Node:%d FC:%02X Addr:%d Qty:%d", 
+        operationId, nodeID, functionCode, offset, numists);
+    return operationId; // Return the operation ID
 }
 
-bool ModBeeAPI::writeHreg_impl(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc) {
-    if (!_protocol || !values) return false;
+uint32_t ModBeeAPI::writeHreg_impl(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc, ModBeeCompletionCallback callback) {
+    if (!_protocol || !values) return 0;
     
     // Check if target node exists
     if (!isNodeKnown(nodeID)) {
-        return false;
+        return 0;
     }
     
     if (nodeID == _protocol->getNodeID()) {
-        // Local write
+        // Local write - immediate completion
         for (uint16_t i = 0; i < numregs; i++) {
             if (!_protocol->getDataMap().setHreg(offset + i, values[i])) {
-                return false; // Write failed
+                return 0; // Write failed
             }
         }
-        return true;
+        // For local operations, call callback immediately if provided
+        if (callback) callback(0); // Use 0 for local operations
+        return 0; // Local operations don't get operation IDs
     }
     
     // Determine function code based on quantity
@@ -549,27 +576,30 @@ bool ModBeeAPI::writeHreg_impl(uint8_t nodeID, uint16_t offset, const int16_t* v
     op.resultPtr = (void*)values;  // Store pointer to user's write data
     op.isArray = (numregs > 1);
     op.arraySize = numregs;
+    op.onComplete = callback;
     
-    _protocol->getOperations().addPendingOperation(op, *_protocol);
-    return true;
+    const uint32_t operationId = _protocol->getOperations().addPendingOperation(op, *_protocol);
+    return operationId; // Return the operation ID
 }
 
-bool ModBeeAPI::writeCoil_impl(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc) {
-    if (!_protocol || !values) return false;
+uint32_t ModBeeAPI::writeCoil_impl(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc, ModBeeCompletionCallback callback) {
+    if (!_protocol || !values) return 0;
     
     // Check if target node exists
     if (!isNodeKnown(nodeID)) {
-        return false;
+        return 0;
     }
     
     if (nodeID == _protocol->getNodeID()) {
-        // Local write
+        // Local write - immediate completion
         for (uint16_t i = 0; i < numcoils; i++) {
             if (!_protocol->getDataMap().setCoil(offset + i, values[i])) {
-                return false; // Write failed
+                return 0; // Write failed
             }
         }
-        return true;
+        // For local operations, call callback immediately if provided
+        if (callback) callback(0); // Use 0 for local operations
+        return 0; // Local operations don't get operation IDs
     }
     
     // Determine function code based on quantity
@@ -598,9 +628,10 @@ bool ModBeeAPI::writeCoil_impl(uint8_t nodeID, uint16_t offset, const bool* valu
     op.resultPtr = (void*)values;  // Store pointer to user's write data
     op.isArray = (numcoils > 1);
     op.arraySize = numcoils;
+    op.onComplete = callback;
     
-    _protocol->getOperations().addPendingOperation(op, *_protocol);
-    return true;
+    const uint32_t operationId = _protocol->getOperations().addPendingOperation(op, *_protocol);
+    return operationId; // Return the operation ID
 }
 
 // =============================================================================

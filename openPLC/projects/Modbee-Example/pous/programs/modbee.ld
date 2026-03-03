@@ -1,6 +1,6 @@
 PROGRAM modbee
 VAR
-	MODBEE_CONFIG0 : MODBEE_CONFIG;
+	MODBEE_HW_CONFIG0 : MODBEE_HW_CONFIG;
 END_VAR
 
 {
@@ -14,7 +14,7 @@ END_VAR
         100
       ],
       "reactFlowViewport": [
-        562,
+        598,
         120
       ],
       "nodes": [
@@ -106,16 +106,16 @@ END_VAR
           }
         },
         {
-          "id": "BLOCK_c6eb586e-de70-4af3-aa79-1a4820746de9",
+          "id": "BLOCK_163d3d84-20f8-42ed-884d-091b6cf3dcd0",
           "type": "block",
           "position": {
             "x": 143,
             "y": 14
           },
           "height": 60,
-          "width": 156,
+          "width": 192,
           "measured": {
-            "width": 156,
+            "width": 192,
             "height": 60
           },
           "draggable": true,
@@ -142,11 +142,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 299,
+                  "x": 335,
                   "y": 50
                 },
                 "relPosition": {
-                  "x": 156,
+                  "x": 192,
                   "y": 36
                 },
                 "id": "ENO",
@@ -182,11 +182,11 @@ END_VAR
             "outputHandles": [
               {
                 "glbPosition": {
-                  "x": 299,
+                  "x": 335,
                   "y": 50
                 },
                 "relPosition": {
-                  "x": 156,
+                  "x": 192,
                   "y": 36
                 },
                 "id": "ENO",
@@ -219,11 +219,11 @@ END_VAR
             },
             "outputConnector": {
               "glbPosition": {
-                "x": 299,
+                "x": 335,
                 "y": 50
               },
               "relPosition": {
-                "x": 156,
+                "x": 192,
                 "y": 36
               },
               "id": "ENO",
@@ -235,9 +235,9 @@ END_VAR
                 "right": 0
               }
             },
-            "numericId": "1958902",
+            "numericId": "9731468",
             "variant": {
-              "name": "MODBEE_CONFIG",
+              "name": "MODBEE_HW_CONFIG",
               "type": "function-block",
               "variables": [
                 {
@@ -261,19 +261,20 @@ END_VAR
               "extensible": false
             },
             "variable": {
-              "name": "MODBEE_CONFIG0",
+              "name": "MODBEE_HW_CONFIG0",
+              "class": "local",
               "type": {
                 "definition": "derived",
                 "value": "MODBEE_CONFIG"
               },
-              "class": "local",
               "location": "",
+              "initialValue": null,
               "documentation": "",
               "debug": false
             },
             "executionOrder": 0,
             "executionControl": true,
-            "lockExecutionControl": true,
+            "lockExecutionControl": false,
             "connectedVariables": [],
             "draggable": true,
             "selectable": true,
@@ -284,7 +285,7 @@ END_VAR
           "id": "right-rail-rung_modbee_b6fc1f0f-b6ff-4c03-ba59-2096f573545e",
           "type": "powerRail",
           "position": {
-            "x": 559,
+            "x": 595,
             "y": 30
           },
           "height": 40,
@@ -314,7 +315,7 @@ END_VAR
                   "top": 20,
                   "left": -3
                 },
-                "x": 559
+                "x": 595
               }
             ],
             "inputHandles": [
@@ -371,15 +372,15 @@ END_VAR
       ],
       "edges": [
         {
-          "id": "e_left-rail-rung_modbee_b6fc1f0f-b6ff-4c03-ba59-2096f573545e_BLOCK_c6eb586e-de70-4af3-aa79-1a4820746de9__left-rail_EN",
+          "id": "e_left-rail-rung_modbee_b6fc1f0f-b6ff-4c03-ba59-2096f573545e_BLOCK_163d3d84-20f8-42ed-884d-091b6cf3dcd0__left-rail_EN",
           "source": "left-rail-rung_modbee_b6fc1f0f-b6ff-4c03-ba59-2096f573545e",
           "sourceHandle": "left-rail",
-          "target": "BLOCK_c6eb586e-de70-4af3-aa79-1a4820746de9",
+          "target": "BLOCK_163d3d84-20f8-42ed-884d-091b6cf3dcd0",
           "targetHandle": "EN"
         },
         {
-          "id": "e_BLOCK_c6eb586e-de70-4af3-aa79-1a4820746de9_right-rail-rung_modbee_b6fc1f0f-b6ff-4c03-ba59-2096f573545e__ENO_right-rail",
-          "source": "BLOCK_c6eb586e-de70-4af3-aa79-1a4820746de9",
+          "id": "e_BLOCK_163d3d84-20f8-42ed-884d-091b6cf3dcd0_right-rail-rung_modbee_b6fc1f0f-b6ff-4c03-ba59-2096f573545e__ENO_right-rail",
+          "source": "BLOCK_163d3d84-20f8-42ed-884d-091b6cf3dcd0",
           "sourceHandle": "ENO",
           "target": "right-rail-rung_modbee_b6fc1f0f-b6ff-4c03-ba59-2096f573545e",
           "targetHandle": "right-rail"

@@ -1,7 +1,7 @@
 PROGRAM main
 VAR
-	MODBEE_INPUTS0 : MODBEE_INPUTS;
-	MODBEE_OUTPUTS0 : MODBEE_OUTPUTS;
+	MODBEE_HW_INPUTS0 : MODBEE_HW_INPUTS;
+	MODBEE_HW_OUTPUTS0 : MODBEE_HW_OUTPUTS;
 	start : bool;
 	stop : bool;
 	run : bool;
@@ -18,7 +18,7 @@ END_VAR
         100
       ],
       "reactFlowViewport": [
-        580,
+        598,
         574
       ],
       "nodes": [
@@ -110,16 +110,16 @@ END_VAR
           }
         },
         {
-          "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "type": "block",
           "position": {
             "x": 143,
             "y": 14
           },
           "height": 540,
-          "width": 174,
+          "width": 192,
           "measured": {
-            "width": 174,
+            "width": 192,
             "height": 540
           },
           "draggable": true,
@@ -146,11 +146,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 50
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 36
                 },
                 "id": "ENO",
@@ -164,11 +164,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 90
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 76
                 },
                 "id": "DX01",
@@ -182,11 +182,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 130
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 116
                 },
                 "id": "DX02",
@@ -200,11 +200,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 170
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 156
                 },
                 "id": "DX03",
@@ -218,11 +218,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 210
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 196
                 },
                 "id": "DX04",
@@ -236,11 +236,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 250
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 236
                 },
                 "id": "DX05",
@@ -254,11 +254,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 290
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 276
                 },
                 "id": "DX06",
@@ -272,11 +272,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 330
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 316
                 },
                 "id": "DX07",
@@ -290,11 +290,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 370
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 356
                 },
                 "id": "DX08",
@@ -308,11 +308,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 410
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 396
                 },
                 "id": "AX01_Scaled",
@@ -326,11 +326,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 450
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 436
                 },
                 "id": "AX02_Scaled",
@@ -344,11 +344,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 490
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 476
                 },
                 "id": "AX03_Scaled",
@@ -362,11 +362,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 530
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 516
                 },
                 "id": "AX04_Scaled",
@@ -402,11 +402,11 @@ END_VAR
             "outputHandles": [
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 50
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 36
                 },
                 "id": "ENO",
@@ -420,11 +420,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 90
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 76
                 },
                 "id": "DX01",
@@ -438,11 +438,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 130
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 116
                 },
                 "id": "DX02",
@@ -456,11 +456,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 170
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 156
                 },
                 "id": "DX03",
@@ -474,11 +474,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 210
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 196
                 },
                 "id": "DX04",
@@ -492,11 +492,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 250
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 236
                 },
                 "id": "DX05",
@@ -510,11 +510,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 290
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 276
                 },
                 "id": "DX06",
@@ -528,11 +528,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 330
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 316
                 },
                 "id": "DX07",
@@ -546,11 +546,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 370
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 356
                 },
                 "id": "DX08",
@@ -564,11 +564,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 410
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 396
                 },
                 "id": "AX01_Scaled",
@@ -582,11 +582,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 450
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 436
                 },
                 "id": "AX02_Scaled",
@@ -600,11 +600,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 490
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 476
                 },
                 "id": "AX03_Scaled",
@@ -618,11 +618,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 317,
+                  "x": 335,
                   "y": 530
                 },
                 "relPosition": {
-                  "x": 174,
+                  "x": 192,
                   "y": 516
                 },
                 "id": "AX04_Scaled",
@@ -655,11 +655,11 @@ END_VAR
             },
             "outputConnector": {
               "glbPosition": {
-                "x": 317,
+                "x": 335,
                 "y": 50
               },
               "relPosition": {
-                "x": 174,
+                "x": 192,
                 "y": 36
               },
               "id": "ENO",
@@ -671,9 +671,9 @@ END_VAR
                 "right": 0
               }
             },
-            "numericId": "6616654",
+            "numericId": "9246113",
             "variant": {
-              "name": "MODBEE_INPUTS",
+              "name": "MODBEE_HW_INPUTS",
               "type": "function-block",
               "variables": [
                 {
@@ -793,32 +793,51 @@ END_VAR
               "extensible": false
             },
             "variable": {
-              "name": "MODBEE_INPUTS0",
+              "name": "MODBEE_HW_INPUTS0",
+              "class": "local",
               "type": {
-                "definition": "derived",
+                "definition": "user-data-type",
                 "value": "MODBEE_INPUTS"
               },
-              "class": "local",
               "location": "",
+              "initialValue": null,
               "documentation": "",
               "debug": false
             },
             "executionOrder": 0,
             "executionControl": true,
-            "lockExecutionControl": true,
+            "lockExecutionControl": false,
             "connectedVariables": [
               {
                 "handleId": "DX01",
                 "type": "output",
                 "variable": {
-                  "name": "start"
+                  "name": "start",
+                  "class": "local",
+                  "type": {
+                    "definition": "base-type",
+                    "value": "bool"
+                  },
+                  "location": "",
+                  "initialValue": null,
+                  "documentation": "",
+                  "debug": true
                 }
               },
               {
                 "handleId": "DX02",
                 "type": "output",
                 "variable": {
-                  "name": "stop"
+                  "name": "stop",
+                  "class": "local",
+                  "type": {
+                    "definition": "base-type",
+                    "value": "bool"
+                  },
+                  "location": "",
+                  "initialValue": null,
+                  "documentation": "",
+                  "debug": true
                 }
               }
             ],
@@ -831,7 +850,7 @@ END_VAR
           "id": "right-rail-rung_main_a0b2da4e-4421-4301-9867-6a29ceb80110",
           "type": "powerRail",
           "position": {
-            "x": 577,
+            "x": 595,
             "y": 30
           },
           "height": 40,
@@ -861,7 +880,7 @@ END_VAR
                   "top": 20,
                   "left": -3
                 },
-                "x": 577
+                "x": 595
               }
             ],
             "inputHandles": [
@@ -916,10 +935,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_3b23972a-c281-40a6-9f82-c005bc715166",
+          "id": "VARIABLE_34caa9ec-b28f-426e-a4fa-16771f8c5c12",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 74
           },
           "height": 32,
@@ -934,7 +953,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 90
                 },
                 "relPosition": {
@@ -950,7 +969,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 90
                 },
                 "relPosition": {
@@ -966,7 +985,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 90
               },
               "relPosition": {
@@ -978,7 +997,7 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "9608992",
+            "numericId": "2832122",
             "variable": {
               "name": "start",
               "class": "local",
@@ -990,12 +1009,12 @@ END_VAR
               "initialValue": null,
               "documentation": "",
               "debug": false,
-              "id": "broken-VARIABLE_3b23972a-c281-40a6-9f82-c005bc715166"
+              "id": "broken-VARIABLE_34caa9ec-b28f-426e-a4fa-16771f8c5c12"
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX01",
               "variableType": {
                 "name": "DX01",
@@ -1013,10 +1032,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_a31c4701-1218-4e98-8736-bc18d8e60cee",
+          "id": "VARIABLE_84c49931-d0ce-4bb5-be98-53db623db666",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 114
           },
           "height": 32,
@@ -1031,7 +1050,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 130
                 },
                 "relPosition": {
@@ -1047,7 +1066,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 130
                 },
                 "relPosition": {
@@ -1063,7 +1082,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 130
               },
               "relPosition": {
@@ -1075,7 +1094,7 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "6089062",
+            "numericId": "7193475",
             "variable": {
               "name": "stop",
               "class": "local",
@@ -1087,12 +1106,12 @@ END_VAR
               "initialValue": null,
               "documentation": "",
               "debug": false,
-              "id": "broken-VARIABLE_a31c4701-1218-4e98-8736-bc18d8e60cee"
+              "id": "broken-VARIABLE_84c49931-d0ce-4bb5-be98-53db623db666"
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX02",
               "variableType": {
                 "name": "DX02",
@@ -1110,10 +1129,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_21ca6ce3-aa36-48af-b9ee-08804b366e9a",
+          "id": "VARIABLE_c84f9228-51bf-4e02-99e4-cbdd7d6205ac",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 154
           },
           "height": 32,
@@ -1128,7 +1147,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 170
                 },
                 "relPosition": {
@@ -1144,7 +1163,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 170
                 },
                 "relPosition": {
@@ -1160,7 +1179,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 170
               },
               "relPosition": {
@@ -1172,14 +1191,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "8427264",
+            "numericId": "7420592",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX03",
               "variableType": {
                 "name": "DX03",
@@ -1196,10 +1215,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_25dd0b2e-76e9-43cc-85e1-926f60bf757c",
+          "id": "VARIABLE_30772c04-fc02-4280-aecf-f32bdb66a4c5",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 194
           },
           "height": 32,
@@ -1214,7 +1233,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 210
                 },
                 "relPosition": {
@@ -1230,7 +1249,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 210
                 },
                 "relPosition": {
@@ -1246,7 +1265,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 210
               },
               "relPosition": {
@@ -1258,14 +1277,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "9443740",
+            "numericId": "9647576",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX04",
               "variableType": {
                 "name": "DX04",
@@ -1282,10 +1301,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_e766bb15-c762-494f-a4ab-0aa7a1de8d4e",
+          "id": "VARIABLE_6f7dc7eb-e648-4164-b50c-483d78ff0dde",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 234
           },
           "height": 32,
@@ -1300,7 +1319,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 250
                 },
                 "relPosition": {
@@ -1316,7 +1335,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 250
                 },
                 "relPosition": {
@@ -1332,7 +1351,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 250
               },
               "relPosition": {
@@ -1344,14 +1363,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "3150254",
+            "numericId": "10768928",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX05",
               "variableType": {
                 "name": "DX05",
@@ -1368,10 +1387,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_ab677951-78df-4db6-9181-0533d378b628",
+          "id": "VARIABLE_9c4db586-d344-49d0-a40d-ce7751eb73eb",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 274
           },
           "height": 32,
@@ -1386,7 +1405,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 290
                 },
                 "relPosition": {
@@ -1402,7 +1421,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 290
                 },
                 "relPosition": {
@@ -1418,7 +1437,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 290
               },
               "relPosition": {
@@ -1430,14 +1449,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "6999005",
+            "numericId": "8742033",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX06",
               "variableType": {
                 "name": "DX06",
@@ -1454,10 +1473,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_d60807ed-ed72-4f7d-8ef3-55c596bcd327",
+          "id": "VARIABLE_3e88ce3d-8e7b-4dcd-95f6-dac8cb4f769a",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 314
           },
           "height": 32,
@@ -1472,7 +1491,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 330
                 },
                 "relPosition": {
@@ -1488,7 +1507,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 330
                 },
                 "relPosition": {
@@ -1504,7 +1523,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 330
               },
               "relPosition": {
@@ -1516,14 +1535,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "5301241",
+            "numericId": "5880630",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX07",
               "variableType": {
                 "name": "DX07",
@@ -1540,10 +1559,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_08bcc650-be92-4d6d-85a1-6284d2898b9c",
+          "id": "VARIABLE_37bab44e-a69c-4b8a-8cfb-8f88cbce0e30",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 354
           },
           "height": 32,
@@ -1558,7 +1577,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 370
                 },
                 "relPosition": {
@@ -1574,7 +1593,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 370
                 },
                 "relPosition": {
@@ -1590,7 +1609,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 370
               },
               "relPosition": {
@@ -1602,14 +1621,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "2273574",
+            "numericId": "9870639",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "DX08",
               "variableType": {
                 "name": "DX08",
@@ -1626,10 +1645,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_0e706850-0f34-4bb3-881c-6627db35e902",
+          "id": "VARIABLE_525ee54d-9dd5-4c96-8518-0d4a37900ad1",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 394
           },
           "height": 32,
@@ -1644,7 +1663,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 410
                 },
                 "relPosition": {
@@ -1660,7 +1679,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 410
                 },
                 "relPosition": {
@@ -1676,7 +1695,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 410
               },
               "relPosition": {
@@ -1688,14 +1707,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "9591157",
+            "numericId": "5315806",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "AX01_Scaled",
               "variableType": {
                 "name": "AX01_Scaled",
@@ -1712,10 +1731,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_597c5626-ab29-4a34-aad2-3624bd9d62e7",
+          "id": "VARIABLE_090eb17e-d75e-4727-af62-80d6d550c8cc",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 434
           },
           "height": 32,
@@ -1730,7 +1749,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 450
                 },
                 "relPosition": {
@@ -1746,7 +1765,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 450
                 },
                 "relPosition": {
@@ -1762,7 +1781,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 450
               },
               "relPosition": {
@@ -1774,14 +1793,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "10263128",
+            "numericId": "5449545",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "AX02_Scaled",
               "variableType": {
                 "name": "AX02_Scaled",
@@ -1798,10 +1817,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_d2507253-7fc7-45aa-a0b1-7f00ac86465a",
+          "id": "VARIABLE_8e46940f-6610-448a-8713-943f1d86aa0b",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 474
           },
           "height": 32,
@@ -1816,7 +1835,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 490
                 },
                 "relPosition": {
@@ -1832,7 +1851,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 490
                 },
                 "relPosition": {
@@ -1848,7 +1867,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 490
               },
               "relPosition": {
@@ -1860,14 +1879,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "8478565",
+            "numericId": "6210231",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "AX03_Scaled",
               "variableType": {
                 "name": "AX03_Scaled",
@@ -1884,10 +1903,10 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_e3b1809a-9ce0-45ea-8ecf-aff4b13364bf",
+          "id": "VARIABLE_622e91f0-b1fc-4ffa-a500-fc02c1fa0c88",
           "type": "variable",
           "position": {
-            "x": 347,
+            "x": 365,
             "y": 514
           },
           "height": 32,
@@ -1902,7 +1921,7 @@ END_VAR
             "handles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 530
                 },
                 "relPosition": {
@@ -1918,7 +1937,7 @@ END_VAR
             "inputHandles": [
               {
                 "glbPosition": {
-                  "x": 347,
+                  "x": 365,
                   "y": 530
                 },
                 "relPosition": {
@@ -1934,7 +1953,7 @@ END_VAR
             "outputHandles": [],
             "inputConnector": {
               "glbPosition": {
-                "x": 347,
+                "x": 365,
                 "y": 530
               },
               "relPosition": {
@@ -1946,14 +1965,14 @@ END_VAR
               "isConnectable": false,
               "type": "target"
             },
-            "numericId": "10413711",
+            "numericId": "8618666",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "output",
             "block": {
-              "id": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+              "id": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
               "handleId": "AX04_Scaled",
               "variableType": {
                 "name": "AX04_Scaled",
@@ -1972,101 +1991,101 @@ END_VAR
       ],
       "edges": [
         {
-          "id": "e_left-rail-rung_main_a0b2da4e-4421-4301-9867-6a29ceb80110_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6__left-rail_EN",
+          "id": "e_left-rail-rung_main_a0b2da4e-4421-4301-9867-6a29ceb80110_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de__left-rail_EN",
           "source": "left-rail-rung_main_a0b2da4e-4421-4301-9867-6a29ceb80110",
           "sourceHandle": "left-rail",
-          "target": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "target": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "targetHandle": "EN"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_right-rail-rung_main_a0b2da4e-4421-4301-9867-6a29ceb80110__ENO_right-rail",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_right-rail-rung_main_a0b2da4e-4421-4301-9867-6a29ceb80110__ENO_right-rail",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "ENO",
           "target": "right-rail-rung_main_a0b2da4e-4421-4301-9867-6a29ceb80110",
           "targetHandle": "right-rail"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_3b23972a-c281-40a6-9f82-c005bc715166__DX01_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_34caa9ec-b28f-426e-a4fa-16771f8c5c12__DX01_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX01",
-          "target": "VARIABLE_3b23972a-c281-40a6-9f82-c005bc715166",
+          "target": "VARIABLE_34caa9ec-b28f-426e-a4fa-16771f8c5c12",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_a31c4701-1218-4e98-8736-bc18d8e60cee__DX02_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_84c49931-d0ce-4bb5-be98-53db623db666__DX02_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX02",
-          "target": "VARIABLE_a31c4701-1218-4e98-8736-bc18d8e60cee",
+          "target": "VARIABLE_84c49931-d0ce-4bb5-be98-53db623db666",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_21ca6ce3-aa36-48af-b9ee-08804b366e9a__DX03_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_c84f9228-51bf-4e02-99e4-cbdd7d6205ac__DX03_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX03",
-          "target": "VARIABLE_21ca6ce3-aa36-48af-b9ee-08804b366e9a",
+          "target": "VARIABLE_c84f9228-51bf-4e02-99e4-cbdd7d6205ac",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_25dd0b2e-76e9-43cc-85e1-926f60bf757c__DX04_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_30772c04-fc02-4280-aecf-f32bdb66a4c5__DX04_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX04",
-          "target": "VARIABLE_25dd0b2e-76e9-43cc-85e1-926f60bf757c",
+          "target": "VARIABLE_30772c04-fc02-4280-aecf-f32bdb66a4c5",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_e766bb15-c762-494f-a4ab-0aa7a1de8d4e__DX05_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_6f7dc7eb-e648-4164-b50c-483d78ff0dde__DX05_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX05",
-          "target": "VARIABLE_e766bb15-c762-494f-a4ab-0aa7a1de8d4e",
+          "target": "VARIABLE_6f7dc7eb-e648-4164-b50c-483d78ff0dde",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_ab677951-78df-4db6-9181-0533d378b628__DX06_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_9c4db586-d344-49d0-a40d-ce7751eb73eb__DX06_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX06",
-          "target": "VARIABLE_ab677951-78df-4db6-9181-0533d378b628",
+          "target": "VARIABLE_9c4db586-d344-49d0-a40d-ce7751eb73eb",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_d60807ed-ed72-4f7d-8ef3-55c596bcd327__DX07_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_3e88ce3d-8e7b-4dcd-95f6-dac8cb4f769a__DX07_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX07",
-          "target": "VARIABLE_d60807ed-ed72-4f7d-8ef3-55c596bcd327",
+          "target": "VARIABLE_3e88ce3d-8e7b-4dcd-95f6-dac8cb4f769a",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_08bcc650-be92-4d6d-85a1-6284d2898b9c__DX08_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_37bab44e-a69c-4b8a-8cfb-8f88cbce0e30__DX08_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "DX08",
-          "target": "VARIABLE_08bcc650-be92-4d6d-85a1-6284d2898b9c",
+          "target": "VARIABLE_37bab44e-a69c-4b8a-8cfb-8f88cbce0e30",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_0e706850-0f34-4bb3-881c-6627db35e902__AX01_Scaled_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_525ee54d-9dd5-4c96-8518-0d4a37900ad1__AX01_Scaled_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "AX01_Scaled",
-          "target": "VARIABLE_0e706850-0f34-4bb3-881c-6627db35e902",
+          "target": "VARIABLE_525ee54d-9dd5-4c96-8518-0d4a37900ad1",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_597c5626-ab29-4a34-aad2-3624bd9d62e7__AX02_Scaled_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_090eb17e-d75e-4727-af62-80d6d550c8cc__AX02_Scaled_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "AX02_Scaled",
-          "target": "VARIABLE_597c5626-ab29-4a34-aad2-3624bd9d62e7",
+          "target": "VARIABLE_090eb17e-d75e-4727-af62-80d6d550c8cc",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_d2507253-7fc7-45aa-a0b1-7f00ac86465a__AX03_Scaled_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_8e46940f-6610-448a-8713-943f1d86aa0b__AX03_Scaled_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "AX03_Scaled",
-          "target": "VARIABLE_d2507253-7fc7-45aa-a0b1-7f00ac86465a",
+          "target": "VARIABLE_8e46940f-6610-448a-8713-943f1d86aa0b",
           "targetHandle": "input"
         },
         {
-          "id": "e_BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6_VARIABLE_e3b1809a-9ce0-45ea-8ecf-aff4b13364bf__AX04_Scaled_input",
-          "source": "BLOCK_bc96a700-ee7a-435b-a8c5-8f2187cb1cd6",
+          "id": "e_BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de_VARIABLE_622e91f0-b1fc-4ffa-a500-fc02c1fa0c88__AX04_Scaled_input",
+          "source": "BLOCK_04b57594-4363-45e2-8c09-3fe1f7b835de",
           "sourceHandle": "AX04_Scaled",
-          "target": "VARIABLE_e3b1809a-9ce0-45ea-8ecf-aff4b13364bf",
+          "target": "VARIABLE_622e91f0-b1fc-4ffa-a500-fc02c1fa0c88",
           "targetHandle": "input"
         }
       ]
@@ -3392,7 +3411,7 @@ END_VAR
         100
       ],
       "reactFlowViewport": [
-        592,
+        610,
         494
       ],
       "nodes": [
@@ -3484,16 +3503,16 @@ END_VAR
           }
         },
         {
-          "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "type": "block",
           "position": {
             "x": 143,
             "y": 14
           },
           "height": 460,
-          "width": 186,
+          "width": 204,
           "measured": {
-            "width": 186,
+            "width": 204,
             "height": 460
           },
           "draggable": true,
@@ -3700,11 +3719,11 @@ END_VAR
               },
               {
                 "glbPosition": {
-                  "x": 329,
+                  "x": 347,
                   "y": 50
                 },
                 "relPosition": {
-                  "x": 186,
+                  "x": 204,
                   "y": 36
                 },
                 "id": "ENO",
@@ -3920,11 +3939,11 @@ END_VAR
             "outputHandles": [
               {
                 "glbPosition": {
-                  "x": 329,
+                  "x": 347,
                   "y": 50
                 },
                 "relPosition": {
-                  "x": 186,
+                  "x": 204,
                   "y": 36
                 },
                 "id": "ENO",
@@ -3957,11 +3976,11 @@ END_VAR
             },
             "outputConnector": {
               "glbPosition": {
-                "x": 329,
+                "x": 347,
                 "y": 50
               },
               "relPosition": {
-                "x": 186,
+                "x": 204,
                 "y": 36
               },
               "id": "ENO",
@@ -3973,9 +3992,9 @@ END_VAR
                 "right": 0
               }
             },
-            "numericId": "4563959",
+            "numericId": "2746190",
             "variant": {
-              "name": "MODBEE_OUTPUTS",
+              "name": "MODBEE_HW_OUTPUTS",
               "type": "function-block",
               "variables": [
                 {
@@ -4079,25 +4098,35 @@ END_VAR
               "extensible": false
             },
             "variable": {
-              "name": "MODBEE_OUTPUTS0",
+              "name": "MODBEE_HW_OUTPUTS0",
+              "class": "local",
               "type": {
-                "definition": "derived",
+                "definition": "user-data-type",
                 "value": "MODBEE_OUTPUTS"
               },
-              "class": "local",
               "location": "",
+              "initialValue": null,
               "documentation": "",
               "debug": false
             },
             "executionOrder": 0,
             "executionControl": true,
-            "lockExecutionControl": true,
+            "lockExecutionControl": false,
             "connectedVariables": [
               {
                 "handleId": "DY01",
                 "type": "input",
                 "variable": {
-                  "name": "run"
+                  "name": "run",
+                  "class": "local",
+                  "type": {
+                    "definition": "base-type",
+                    "value": "bool"
+                  },
+                  "location": "",
+                  "initialValue": null,
+                  "documentation": "",
+                  "debug": true
                 }
               }
             ],
@@ -4110,7 +4139,7 @@ END_VAR
           "id": "right-rail-rung_main_8ca36f69-1945-4a1e-8d4c-61d07b465f54",
           "type": "powerRail",
           "position": {
-            "x": 589,
+            "x": 607,
             "y": 30
           },
           "height": 40,
@@ -4140,7 +4169,7 @@ END_VAR
                   "top": 20,
                   "left": -3
                 },
-                "x": 589
+                "x": 607
               }
             ],
             "inputHandles": [
@@ -4195,7 +4224,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_092dce93-ff06-4e4a-b618-63a9870ad3da",
+          "id": "VARIABLE_2df59695-2790-4fd4-b6d5-514a92d3d2ef",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4257,7 +4286,7 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "7283231",
+            "numericId": "1180630",
             "variable": {
               "name": "run",
               "class": "local",
@@ -4269,12 +4298,12 @@ END_VAR
               "initialValue": null,
               "documentation": "",
               "debug": false,
-              "id": "broken-VARIABLE_092dce93-ff06-4e4a-b618-63a9870ad3da"
+              "id": "broken-VARIABLE_2df59695-2790-4fd4-b6d5-514a92d3d2ef"
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY01",
               "variableType": {
                 "name": "DY01",
@@ -4292,7 +4321,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_afcd6917-ab2a-45c3-a7b4-63feb54f4df4",
+          "id": "VARIABLE_d9603548-ae17-41fe-ab20-c6acffbcd671",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4354,14 +4383,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "8346592",
+            "numericId": "4004379",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY02",
               "variableType": {
                 "name": "DY02",
@@ -4378,7 +4407,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_4dc5f78f-a11b-4da4-a484-dba19cfa6963",
+          "id": "VARIABLE_6510fa6c-9e09-4e67-b75d-0bb68b841243",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4440,14 +4469,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "7192473",
+            "numericId": "8246133",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY03",
               "variableType": {
                 "name": "DY03",
@@ -4464,7 +4493,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_5297c227-24f8-406a-91ed-ff74637c696a",
+          "id": "VARIABLE_7fb6bebd-e3f0-45d7-974b-e4e382c14e18",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4526,14 +4555,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "7332210",
+            "numericId": "10823154",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY04",
               "variableType": {
                 "name": "DY04",
@@ -4550,7 +4579,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_cd6cb3f8-0b83-4fad-b573-fc318704450a",
+          "id": "VARIABLE_c759cdc8-ff46-4695-b345-afe1f688a0d5",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4612,14 +4641,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "7318113",
+            "numericId": "10625638",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY05",
               "variableType": {
                 "name": "DY05",
@@ -4636,7 +4665,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_6376b72c-f1dd-47aa-9bef-9c39edcb9d89",
+          "id": "VARIABLE_ebcedc64-28bf-40a9-8fa7-1356b6c14c7b",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4698,14 +4727,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "6820545",
+            "numericId": "5435110",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY06",
               "variableType": {
                 "name": "DY06",
@@ -4722,7 +4751,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_877b7fcd-f493-47d5-8504-d7a8e2fdc27e",
+          "id": "VARIABLE_22cf372f-a9f4-4f5f-9c94-0916b879092a",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4784,14 +4813,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "10206701",
+            "numericId": "3486283",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY07",
               "variableType": {
                 "name": "DY07",
@@ -4808,7 +4837,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_32a6cd54-4de8-4be7-87a7-665d239f4fd5",
+          "id": "VARIABLE_dd8c9632-0449-4aa7-aaab-91a027fdee9f",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4870,14 +4899,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "10190539",
+            "numericId": "5096504",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "DY08",
               "variableType": {
                 "name": "DY08",
@@ -4894,7 +4923,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_252e53e9-71c9-4552-b593-940752907a4f",
+          "id": "VARIABLE_3b5fb961-28c6-446c-bbab-26cae12c6c8a",
           "type": "variable",
           "position": {
             "x": 33,
@@ -4956,14 +4985,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "2066275",
+            "numericId": "7939332",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "AY01_Scaled",
               "variableType": {
                 "name": "AY01_Scaled",
@@ -4980,7 +5009,7 @@ END_VAR
           }
         },
         {
-          "id": "VARIABLE_ecfcff18-917e-49d6-a2b3-5527aa160dc7",
+          "id": "VARIABLE_18667d18-1628-41d1-b9dd-12e985d458de",
           "type": "variable",
           "position": {
             "x": 33,
@@ -5042,14 +5071,14 @@ END_VAR
               "isConnectable": false,
               "type": "source"
             },
-            "numericId": "6348199",
+            "numericId": "9548021",
             "variable": {
               "name": ""
             },
             "executionOrder": 0,
             "variant": "input",
             "block": {
-              "id": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+              "id": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
               "handleId": "AY02_Scaled",
               "variableType": {
                 "name": "AY02_Scaled",
@@ -5068,88 +5097,484 @@ END_VAR
       ],
       "edges": [
         {
-          "id": "e_left-rail-rung_main_8ca36f69-1945-4a1e-8d4c-61d07b465f54_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__left-rail_EN",
+          "id": "e_left-rail-rung_main_8ca36f69-1945-4a1e-8d4c-61d07b465f54_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__left-rail_EN",
           "source": "left-rail-rung_main_8ca36f69-1945-4a1e-8d4c-61d07b465f54",
           "sourceHandle": "left-rail",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "EN"
         },
         {
-          "id": "e_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926_right-rail-rung_main_8ca36f69-1945-4a1e-8d4c-61d07b465f54__ENO_right-rail",
-          "source": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "id": "e_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553_right-rail-rung_main_8ca36f69-1945-4a1e-8d4c-61d07b465f54__ENO_right-rail",
+          "source": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "sourceHandle": "ENO",
           "target": "right-rail-rung_main_8ca36f69-1945-4a1e-8d4c-61d07b465f54",
           "targetHandle": "right-rail"
         },
         {
-          "id": "e_VARIABLE_092dce93-ff06-4e4a-b618-63a9870ad3da_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY01",
-          "source": "VARIABLE_092dce93-ff06-4e4a-b618-63a9870ad3da",
+          "id": "e_VARIABLE_2df59695-2790-4fd4-b6d5-514a92d3d2ef_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY01",
+          "source": "VARIABLE_2df59695-2790-4fd4-b6d5-514a92d3d2ef",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY01"
         },
         {
-          "id": "e_VARIABLE_afcd6917-ab2a-45c3-a7b4-63feb54f4df4_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY02",
-          "source": "VARIABLE_afcd6917-ab2a-45c3-a7b4-63feb54f4df4",
+          "id": "e_VARIABLE_d9603548-ae17-41fe-ab20-c6acffbcd671_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY02",
+          "source": "VARIABLE_d9603548-ae17-41fe-ab20-c6acffbcd671",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY02"
         },
         {
-          "id": "e_VARIABLE_4dc5f78f-a11b-4da4-a484-dba19cfa6963_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY03",
-          "source": "VARIABLE_4dc5f78f-a11b-4da4-a484-dba19cfa6963",
+          "id": "e_VARIABLE_6510fa6c-9e09-4e67-b75d-0bb68b841243_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY03",
+          "source": "VARIABLE_6510fa6c-9e09-4e67-b75d-0bb68b841243",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY03"
         },
         {
-          "id": "e_VARIABLE_5297c227-24f8-406a-91ed-ff74637c696a_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY04",
-          "source": "VARIABLE_5297c227-24f8-406a-91ed-ff74637c696a",
+          "id": "e_VARIABLE_7fb6bebd-e3f0-45d7-974b-e4e382c14e18_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY04",
+          "source": "VARIABLE_7fb6bebd-e3f0-45d7-974b-e4e382c14e18",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY04"
         },
         {
-          "id": "e_VARIABLE_cd6cb3f8-0b83-4fad-b573-fc318704450a_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY05",
-          "source": "VARIABLE_cd6cb3f8-0b83-4fad-b573-fc318704450a",
+          "id": "e_VARIABLE_c759cdc8-ff46-4695-b345-afe1f688a0d5_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY05",
+          "source": "VARIABLE_c759cdc8-ff46-4695-b345-afe1f688a0d5",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY05"
         },
         {
-          "id": "e_VARIABLE_6376b72c-f1dd-47aa-9bef-9c39edcb9d89_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY06",
-          "source": "VARIABLE_6376b72c-f1dd-47aa-9bef-9c39edcb9d89",
+          "id": "e_VARIABLE_ebcedc64-28bf-40a9-8fa7-1356b6c14c7b_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY06",
+          "source": "VARIABLE_ebcedc64-28bf-40a9-8fa7-1356b6c14c7b",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY06"
         },
         {
-          "id": "e_VARIABLE_877b7fcd-f493-47d5-8504-d7a8e2fdc27e_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY07",
-          "source": "VARIABLE_877b7fcd-f493-47d5-8504-d7a8e2fdc27e",
+          "id": "e_VARIABLE_22cf372f-a9f4-4f5f-9c94-0916b879092a_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY07",
+          "source": "VARIABLE_22cf372f-a9f4-4f5f-9c94-0916b879092a",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY07"
         },
         {
-          "id": "e_VARIABLE_32a6cd54-4de8-4be7-87a7-665d239f4fd5_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_DY08",
-          "source": "VARIABLE_32a6cd54-4de8-4be7-87a7-665d239f4fd5",
+          "id": "e_VARIABLE_dd8c9632-0449-4aa7-aaab-91a027fdee9f_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_DY08",
+          "source": "VARIABLE_dd8c9632-0449-4aa7-aaab-91a027fdee9f",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "DY08"
         },
         {
-          "id": "e_VARIABLE_252e53e9-71c9-4552-b593-940752907a4f_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_AY01_Scaled",
-          "source": "VARIABLE_252e53e9-71c9-4552-b593-940752907a4f",
+          "id": "e_VARIABLE_3b5fb961-28c6-446c-bbab-26cae12c6c8a_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_AY01_Scaled",
+          "source": "VARIABLE_3b5fb961-28c6-446c-bbab-26cae12c6c8a",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "AY01_Scaled"
         },
         {
-          "id": "e_VARIABLE_ecfcff18-917e-49d6-a2b3-5527aa160dc7_BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926__output_AY02_Scaled",
-          "source": "VARIABLE_ecfcff18-917e-49d6-a2b3-5527aa160dc7",
+          "id": "e_VARIABLE_18667d18-1628-41d1-b9dd-12e985d458de_BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553__output_AY02_Scaled",
+          "source": "VARIABLE_18667d18-1628-41d1-b9dd-12e985d458de",
           "sourceHandle": "output",
-          "target": "BLOCK_2389e069-e5e8-4a52-beba-ed4203ff7926",
+          "target": "BLOCK_f71492ac-1986-4b2a-910a-92abd9bbb553",
           "targetHandle": "AY02_Scaled"
+        }
+      ]
+    },
+    {
+      "id": "rung_main_ed072c9b-b9f3-4f71-a2eb-3e43740fd3b8",
+      "comment": "",
+      "defaultBounds": [
+        300,
+        100
+      ],
+      "reactFlowViewport": [
+        300,
+        120
+      ],
+      "nodes": [
+        {
+          "id": "left-rail-rung_main_ed072c9b-b9f3-4f71-a2eb-3e43740fd3b8",
+          "type": "powerRail",
+          "position": {
+            "x": 0,
+            "y": 30
+          },
+          "height": 40,
+          "width": 3,
+          "measured": {
+            "width": 3,
+            "height": 40
+          },
+          "draggable": false,
+          "selectable": false,
+          "data": {
+            "handles": [
+              {
+                "glbPosition": {
+                  "x": 3,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "left-rail",
+                "position": "right",
+                "type": "source",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "right": -3
+                }
+              }
+            ],
+            "inputHandles": [],
+            "outputHandles": [
+              {
+                "glbPosition": {
+                  "x": 3,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "left-rail",
+                "position": "right",
+                "type": "source",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "right": -3
+                }
+              }
+            ],
+            "outputConnector": {
+              "glbPosition": {
+                "x": 3,
+                "y": 50
+              },
+              "relPosition": {
+                "x": 3,
+                "y": 20
+              },
+              "id": "left-rail",
+              "position": "right",
+              "type": "source",
+              "isConnectable": false,
+              "style": {
+                "top": 20,
+                "right": -3
+              }
+            },
+            "numericId": "5887326",
+            "variant": "left",
+            "variable": {
+              "name": ""
+            },
+            "executionOrder": 0,
+            "draggable": false,
+            "selectable": false,
+            "deletable": false,
+            "hasDivergence": false
+          }
+        },
+        {
+          "id": "right-rail-rung_main_ed072c9b-b9f3-4f71-a2eb-3e43740fd3b8",
+          "type": "powerRail",
+          "position": {
+            "x": 297,
+            "y": 30
+          },
+          "height": 40,
+          "width": 3,
+          "measured": {
+            "width": 3,
+            "height": 40
+          },
+          "draggable": false,
+          "selectable": false,
+          "data": {
+            "handles": [
+              {
+                "glbPosition": {
+                  "x": 297,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "right-rail",
+                "position": "left",
+                "type": "target",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "left": -3
+                },
+                "x": 297
+              }
+            ],
+            "inputHandles": [
+              {
+                "glbPosition": {
+                  "x": 297,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "right-rail",
+                "position": "left",
+                "type": "target",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "left": -3
+                }
+              }
+            ],
+            "outputHandles": [],
+            "inputConnector": {
+              "glbPosition": {
+                "x": 297,
+                "y": 50
+              },
+              "relPosition": {
+                "x": 3,
+                "y": 20
+              },
+              "id": "right-rail",
+              "position": "left",
+              "type": "target",
+              "isConnectable": false,
+              "style": {
+                "top": 20,
+                "left": -3
+              }
+            },
+            "numericId": "8492091",
+            "variant": "right",
+            "variable": {
+              "name": ""
+            },
+            "executionOrder": 0,
+            "draggable": false,
+            "selectable": false,
+            "deletable": false,
+            "hasDivergence": false
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e_left-rail-rung_main_ed072c9b-b9f3-4f71-a2eb-3e43740fd3b8_right-rail-rung_main_ed072c9b-b9f3-4f71-a2eb-3e43740fd3b8__left-rail_right-rail",
+          "source": "left-rail-rung_main_ed072c9b-b9f3-4f71-a2eb-3e43740fd3b8",
+          "sourceHandle": "left-rail",
+          "target": "right-rail-rung_main_ed072c9b-b9f3-4f71-a2eb-3e43740fd3b8",
+          "targetHandle": "right-rail"
+        }
+      ]
+    },
+    {
+      "id": "rung_main_ff6c7b9c-3d41-48df-8219-710f334c6e79",
+      "comment": "",
+      "defaultBounds": [
+        300,
+        100
+      ],
+      "reactFlowViewport": [
+        300,
+        120
+      ],
+      "nodes": [
+        {
+          "id": "left-rail-rung_main_ff6c7b9c-3d41-48df-8219-710f334c6e79",
+          "type": "powerRail",
+          "position": {
+            "x": 0,
+            "y": 30
+          },
+          "height": 40,
+          "width": 3,
+          "measured": {
+            "width": 3,
+            "height": 40
+          },
+          "draggable": false,
+          "selectable": false,
+          "data": {
+            "handles": [
+              {
+                "glbPosition": {
+                  "x": 3,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "left-rail",
+                "position": "right",
+                "type": "source",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "right": -3
+                }
+              }
+            ],
+            "inputHandles": [],
+            "outputHandles": [
+              {
+                "glbPosition": {
+                  "x": 3,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "left-rail",
+                "position": "right",
+                "type": "source",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "right": -3
+                }
+              }
+            ],
+            "outputConnector": {
+              "glbPosition": {
+                "x": 3,
+                "y": 50
+              },
+              "relPosition": {
+                "x": 3,
+                "y": 20
+              },
+              "id": "left-rail",
+              "position": "right",
+              "type": "source",
+              "isConnectable": false,
+              "style": {
+                "top": 20,
+                "right": -3
+              }
+            },
+            "numericId": "2630839",
+            "variant": "left",
+            "variable": {
+              "name": ""
+            },
+            "executionOrder": 0,
+            "draggable": false,
+            "selectable": false,
+            "deletable": false,
+            "hasDivergence": false
+          }
+        },
+        {
+          "id": "right-rail-rung_main_ff6c7b9c-3d41-48df-8219-710f334c6e79",
+          "type": "powerRail",
+          "position": {
+            "x": 297,
+            "y": 30
+          },
+          "height": 40,
+          "width": 3,
+          "measured": {
+            "width": 3,
+            "height": 40
+          },
+          "draggable": false,
+          "selectable": false,
+          "data": {
+            "handles": [
+              {
+                "glbPosition": {
+                  "x": 297,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "right-rail",
+                "position": "left",
+                "type": "target",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "left": -3
+                },
+                "x": 297
+              }
+            ],
+            "inputHandles": [
+              {
+                "glbPosition": {
+                  "x": 297,
+                  "y": 50
+                },
+                "relPosition": {
+                  "x": 3,
+                  "y": 20
+                },
+                "id": "right-rail",
+                "position": "left",
+                "type": "target",
+                "isConnectable": false,
+                "style": {
+                  "top": 20,
+                  "left": -3
+                }
+              }
+            ],
+            "outputHandles": [],
+            "inputConnector": {
+              "glbPosition": {
+                "x": 297,
+                "y": 50
+              },
+              "relPosition": {
+                "x": 3,
+                "y": 20
+              },
+              "id": "right-rail",
+              "position": "left",
+              "type": "target",
+              "isConnectable": false,
+              "style": {
+                "top": 20,
+                "left": -3
+              }
+            },
+            "numericId": "6695444",
+            "variant": "right",
+            "variable": {
+              "name": ""
+            },
+            "executionOrder": 0,
+            "draggable": false,
+            "selectable": false,
+            "deletable": false,
+            "hasDivergence": false
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "e_left-rail-rung_main_ff6c7b9c-3d41-48df-8219-710f334c6e79_right-rail-rung_main_ff6c7b9c-3d41-48df-8219-710f334c6e79__left-rail_right-rail",
+          "source": "left-rail-rung_main_ff6c7b9c-3d41-48df-8219-710f334c6e79",
+          "sourceHandle": "left-rail",
+          "target": "right-rail-rung_main_ff6c7b9c-3d41-48df-8219-710f334c6e79",
+          "targetHandle": "right-rail"
         }
       ]
     }

@@ -9,7 +9,8 @@
 #include <ADS1X15.h>
 #include <ModbeeGP8XXX.h>
 #include <ArduinoJson.h>
-#include <ModBeeProtocol.h>
+//#include <ModBeeProtocol.h>
+#include <ModBeeAPI.h>
 
 #define LED_PIN 39
 #define DEFAULT_LED_BRIGHTNESS 200
@@ -18,6 +19,8 @@
 #define MB_MASTER 1
 #define MB_SLAVE 0
 #define MB_NONE 2
+#define MB_REMOTE_IO 3
+#define MBEE_REMOTE_IO 4
 
 enum AnalogMode {
   MODE_CURRENT = 20000,
@@ -40,7 +43,7 @@ enum AnalogOutputChannel {
 
 // Modbus Coil Registers (mbDO01-mbDO08)
 enum CoilReg {
-  mbDO01 = 0,
+  mbDO01 = 100,
   mbDO02,
   mbDO03,
   mbDO04,
@@ -52,7 +55,7 @@ enum CoilReg {
 
 // Modbus Input Status Registers (mbDI01-mbDI08)
 enum InputStatusReg {
-  mbDI01 = 0,
+  mbDI01 = 100,
   mbDI02,
   mbDI03,
   mbDI04,
@@ -64,7 +67,7 @@ enum InputStatusReg {
 
 // Modbus Input Registers (mbAI01-mbAI04 Scaled and Raw)
 enum InputReg {
-  mbAI01_SCALED = 0,
+  mbAI01_SCALED = 100,
   mbAI02_SCALED,
   mbAI03_SCALED,
   mbAI04_SCALED,
@@ -76,7 +79,7 @@ enum InputReg {
 
 // Modbus Holding Registers (0-based addressing)
 enum HoldingReg {
-  mbAO01_SCALED = 0,
+  mbAO01_SCALED = 100,
   mbAO02_SCALED,
   mbAO01_RAW,
   mbAO02_RAW,
@@ -104,21 +107,16 @@ class ESP32Modbee {
 public:
   ESP32Modbee(
     uint8_t mode,
-    uint8_t ledPin = LED_PIN,
-    uint8_t sdaPin = 37,
-    uint8_t sclPin = 38,
-    uint8_t modbusRxPin = 18,
-    uint8_t modbusTxPin = 17,
-    uint8_t modbusId = 1,
-    uint8_t modbeeRxPin = 16,
-    uint8_t modbeeTxPin = 15,
-    uint8_t modbeeId = 1,
-    uint32_t baudrate1 = 9600,
-    uint32_t serialConfig1 = SERIAL_8N1,
-    HardwareSerial* serialPort1 = &Serial1,
-    uint32_t baudrate2 = 9600,
-    uint32_t serialConfig2 = SERIAL_8N1,
-    HardwareSerial* serialPort2 = &Serial2
+    uint8_t modbusRxPin,
+    uint8_t modbusTxPin,
+    uint8_t modbusId,
+    uint8_t modbeeRxPin,
+    uint8_t modbeeTxPin,
+    uint8_t modbeeId,
+    uint32_t baudrate1,
+    uint32_t serialConfig1,
+    uint32_t baudrate2,
+    uint32_t serialConfig2
   );
 
   void begin();
@@ -129,6 +127,7 @@ public:
 
   bool DI01, DI02, DI03, DI04, DI05, DI06, DI07, DI08;
   bool DO01, DO02, DO03, DO04, DO05, DO06, DO07, DO08;
+  bool hatPower;
 
   int16_t AI01_Scaled, AI02_Scaled, AI03_Scaled, AI04_Scaled;
   int16_t AO01_Scaled, AO02_Scaled;
@@ -141,10 +140,17 @@ public:
   int16_t _calLowDAC[2];
   int16_t _calHighDAC[2];
 
+  // Temporary variables for ModBee register mappings (to avoid conflicts)
+  bool mbeeTempDO01, mbeeTempDO02, mbeeTempDO03, mbeeTempDO04;
+  bool mbeeTempDO05, mbeeTempDO06, mbeeTempDO07, mbeeTempDO08;
+  int16_t mbeeTempAO01_Scaled, mbeeTempAO02_Scaled;
+  int16_t mbeeTempAO01_Raw, mbeeTempAO02_Raw;
+
   ModbusRTU mb;
   uint8_t modbusID;
   bool isMaster;
 
+  ModBeeAPI mbee;
   uint8_t modbeeID;
 
   void _resetCalibration();
@@ -162,6 +168,7 @@ private:
   uint32_t _baudrate2;
   uint32_t _serialConfig2;
   HardwareSerial* _serialPort2;
+  uint8_t _hatPowerPin = 9;
 
   CRGB _leds[1];
   ADS1115 _ads;

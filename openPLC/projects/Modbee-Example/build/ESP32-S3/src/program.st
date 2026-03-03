@@ -1,10 +1,64 @@
-PROGRAM modbee
+FUNCTION_BLOCK MODBEE_HW_CONFIG
   VAR
-    MODBEE_CONFIG0 : MODBEE_CONFIG;
+    hasBeenInitialized : BOOL := 0;
   END_VAR
 
-  MODBEE_CONFIG0(EN := TRUE);
+  {{
+  MODBEE_HW_CONFIG_VARS vars;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbee_hw_config_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbee_hw_config_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+PROGRAM modbee
+  VAR
+    MODBEE_HW_CONFIG0 : MODBEE_HW_CONFIG;
+  END_VAR
+
+  MODBEE_HW_CONFIG0(EN := TRUE);
 END_PROGRAM
+
+FUNCTION_BLOCK MODBEE_ADD_REGISTER
+  VAR_INPUT
+    REG : BYTE;
+    ADDRESS : WORD;
+    VAR_BOOL : BOOL;
+    VAR_INT : INT;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBEE_ADD_REGISTER_VARS vars;
+  vars.REG = &data__->REG.value;
+  vars.ADDRESS = &data__->ADDRESS.value;
+  vars.VAR_BOOL = &data__->VAR_BOOL.value;
+  vars.VAR_INT = &data__->VAR_INT.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbee_add_register_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbee_add_register_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
 
 FUNCTION_BLOCK MODBEE_CONFIG
   VAR
@@ -25,7 +79,30 @@ FUNCTION_BLOCK MODBEE_CONFIG
   }}
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK MODBEE_INPUTS
+FUNCTION_BLOCK MODBEE_HAT_PWR
+  VAR_INPUT
+    EN_HAT_POWER : BOOL;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBEE_HAT_PWR_VARS vars;
+  vars.EN_HAT_POWER = &data__->EN_HAT_POWER.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbee_hat_pwr_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbee_hat_pwr_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBEE_HW_INPUTS
   VAR_OUTPUT
     DX01 : BOOL;
     DX02 : BOOL;
@@ -45,7 +122,7 @@ FUNCTION_BLOCK MODBEE_INPUTS
   END_VAR
 
   {{
-  MODBEE_INPUTS_VARS vars;
+  MODBEE_HW_INPUTS_VARS vars;
   vars.DX01 = &data__->DX01.value;
   vars.DX02 = &data__->DX02.value;
   vars.DX03 = &data__->DX03.value;
@@ -61,16 +138,16 @@ FUNCTION_BLOCK MODBEE_INPUTS
   }}
   if hasBeenInitialized = False then
   {{
-  modbee_inputs_setup(&vars);
+  modbee_hw_inputs_setup(&vars);
   }}
   hasBeenInitialized := True;
   end_if;
   {{
-  modbee_inputs_loop(&vars);
+  modbee_hw_inputs_loop(&vars);
   }}
 END_FUNCTION_BLOCK
 
-FUNCTION_BLOCK MODBEE_OUTPUTS
+FUNCTION_BLOCK MODBEE_HW_OUTPUTS
   VAR_INPUT
     DY01 : BOOL;
     DY02 : BOOL;
@@ -88,7 +165,7 @@ FUNCTION_BLOCK MODBEE_OUTPUTS
   END_VAR
 
   {{
-  MODBEE_OUTPUTS_VARS vars;
+  MODBEE_HW_OUTPUTS_VARS vars;
   vars.DY01 = &data__->DY01.value;
   vars.DY02 = &data__->DY02.value;
   vars.DY03 = &data__->DY03.value;
@@ -102,47 +179,554 @@ FUNCTION_BLOCK MODBEE_OUTPUTS
   }}
   if hasBeenInitialized = False then
   {{
-  modbee_outputs_setup(&vars);
+  modbee_hw_outputs_setup(&vars);
   }}
   hasBeenInitialized := True;
   end_if;
   {{
-  modbee_outputs_loop(&vars);
+  modbee_hw_outputs_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBEE_READ
+  VAR_INPUT
+    REQ : BOOL;
+    NODE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+    NODE_ONLINE : BOOL;
+    COIL_01 : BOOL;
+    COIL_02 : BOOL;
+    COIL_03 : BOOL;
+    COIL_04 : BOOL;
+    COIL_05 : BOOL;
+    COIL_06 : BOOL;
+    COIL_07 : BOOL;
+    COIL_08 : BOOL;
+    REG_01 : INT;
+    REG_02 : INT;
+    REG_03 : INT;
+    REG_04 : INT;
+    REG_05 : INT;
+    REG_06 : INT;
+    REG_07 : INT;
+    REG_08 : INT;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBEE_READ_VARS vars;
+  vars.REQ = &data__->REQ.value;
+  vars.NODE_ID = &data__->NODE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  vars.NODE_ONLINE = &data__->NODE_ONLINE.value;
+  vars.COIL_01 = &data__->COIL_01.value;
+  vars.COIL_02 = &data__->COIL_02.value;
+  vars.COIL_03 = &data__->COIL_03.value;
+  vars.COIL_04 = &data__->COIL_04.value;
+  vars.COIL_05 = &data__->COIL_05.value;
+  vars.COIL_06 = &data__->COIL_06.value;
+  vars.COIL_07 = &data__->COIL_07.value;
+  vars.COIL_08 = &data__->COIL_08.value;
+  vars.REG_01 = &data__->REG_01.value;
+  vars.REG_02 = &data__->REG_02.value;
+  vars.REG_03 = &data__->REG_03.value;
+  vars.REG_04 = &data__->REG_04.value;
+  vars.REG_05 = &data__->REG_05.value;
+  vars.REG_06 = &data__->REG_06.value;
+  vars.REG_07 = &data__->REG_07.value;
+  vars.REG_08 = &data__->REG_08.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbee_read_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbee_read_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBEE_READ_ARRAY
+  VAR_INPUT
+    REQ : BOOL;
+    NODE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+    NODE_ONLINE : BOOL;
+    COILS : ARRAY [0..31] OF BOOL;
+    REGS : ARRAY [0..31] OF INT;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBEE_READ_ARRAY_VARS vars;
+  IEC_BOOL __flat_COILS[32];
+  IEC_INT __flat_REGS[32];
+  for (int __i = 0; __i < 32; __i++) __flat_COILS[__i] = data__->COILS.value.table[__i].value;
+  for (int __i = 0; __i < 32; __i++) __flat_REGS[__i] = data__->REGS.value.table[__i].value;
+  vars.REQ = &data__->REQ.value;
+  vars.NODE_ID = &data__->NODE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  vars.NODE_ONLINE = &data__->NODE_ONLINE.value;
+  vars.COILS = __flat_COILS - 0;
+  vars.REGS = __flat_REGS - 0;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbee_read_array_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbee_read_array_loop(&vars);
+  }}
+  {{
+  for (int __i = 0; __i < 32; __i++) data__->COILS.value.table[__i].value = __flat_COILS[__i];
+  for (int __i = 0; __i < 32; __i++) data__->REGS.value.table[__i].value = __flat_REGS[__i];
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBEE_WRITE
+  VAR_INPUT
+    REQ : BOOL;
+    NODE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+    COIL_01 : BOOL;
+    COIL_02 : BOOL;
+    COIL_03 : BOOL;
+    COIL_04 : BOOL;
+    COIL_05 : BOOL;
+    COIL_06 : BOOL;
+    COIL_07 : BOOL;
+    COIL_08 : BOOL;
+    REG_01 : INT;
+    REG_02 : INT;
+    REG_03 : INT;
+    REG_04 : INT;
+    REG_05 : INT;
+    REG_06 : INT;
+    REG_07 : INT;
+    REG_08 : INT;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+    NODE_ONLINE : BOOL;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBEE_WRITE_VARS vars;
+  vars.REQ = &data__->REQ.value;
+  vars.NODE_ID = &data__->NODE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.COIL_01 = &data__->COIL_01.value;
+  vars.COIL_02 = &data__->COIL_02.value;
+  vars.COIL_03 = &data__->COIL_03.value;
+  vars.COIL_04 = &data__->COIL_04.value;
+  vars.COIL_05 = &data__->COIL_05.value;
+  vars.COIL_06 = &data__->COIL_06.value;
+  vars.COIL_07 = &data__->COIL_07.value;
+  vars.COIL_08 = &data__->COIL_08.value;
+  vars.REG_01 = &data__->REG_01.value;
+  vars.REG_02 = &data__->REG_02.value;
+  vars.REG_03 = &data__->REG_03.value;
+  vars.REG_04 = &data__->REG_04.value;
+  vars.REG_05 = &data__->REG_05.value;
+  vars.REG_06 = &data__->REG_06.value;
+  vars.REG_07 = &data__->REG_07.value;
+  vars.REG_08 = &data__->REG_08.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  vars.NODE_ONLINE = &data__->NODE_ONLINE.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbee_write_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbee_write_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBEE_WRITE_ARRAY
+  VAR_INPUT
+    REQ : BOOL;
+    NODE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+    COILS : ARRAY [0..31] OF BOOL;
+    REGS : ARRAY [0..31] OF INT;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+    NODE_ONLINE : BOOL;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBEE_WRITE_ARRAY_VARS vars;
+  IEC_BOOL __flat_COILS[32];
+  IEC_INT __flat_REGS[32];
+  for (int __i = 0; __i < 32; __i++) __flat_COILS[__i] = data__->COILS.value.table[__i].value;
+  for (int __i = 0; __i < 32; __i++) __flat_REGS[__i] = data__->REGS.value.table[__i].value;
+  vars.REQ = &data__->REQ.value;
+  vars.NODE_ID = &data__->NODE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.COILS = __flat_COILS - 0;
+  vars.REGS = __flat_REGS - 0;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  vars.NODE_ONLINE = &data__->NODE_ONLINE.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbee_write_array_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbee_write_array_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBUS_ADD_REGISTER
+  VAR_INPUT
+    REG : BYTE;
+    ADDRESS : WORD;
+    VAR_BOOL : BOOL;
+    VAR_INT : INT;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBUS_ADD_REGISTER_VARS vars;
+  vars.REG = &data__->REG.value;
+  vars.ADDRESS = &data__->ADDRESS.value;
+  vars.VAR_BOOL = &data__->VAR_BOOL.value;
+  vars.VAR_INT = &data__->VAR_INT.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbus_add_register_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbus_add_register_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBUS_READ
+  VAR_INPUT
+    REQ : BOOL;
+    SLAVE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+    COIL_01 : BOOL;
+    COIL_02 : BOOL;
+    COIL_03 : BOOL;
+    COIL_04 : BOOL;
+    COIL_05 : BOOL;
+    COIL_06 : BOOL;
+    COIL_07 : BOOL;
+    COIL_08 : BOOL;
+    REG_01 : INT;
+    REG_02 : INT;
+    REG_03 : INT;
+    REG_04 : INT;
+    REG_05 : INT;
+    REG_06 : INT;
+    REG_07 : INT;
+    REG_08 : INT;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBUS_READ_VARS vars;
+  vars.REQ = &data__->REQ.value;
+  vars.SLAVE_ID = &data__->SLAVE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  vars.COIL_01 = &data__->COIL_01.value;
+  vars.COIL_02 = &data__->COIL_02.value;
+  vars.COIL_03 = &data__->COIL_03.value;
+  vars.COIL_04 = &data__->COIL_04.value;
+  vars.COIL_05 = &data__->COIL_05.value;
+  vars.COIL_06 = &data__->COIL_06.value;
+  vars.COIL_07 = &data__->COIL_07.value;
+  vars.COIL_08 = &data__->COIL_08.value;
+  vars.REG_01 = &data__->REG_01.value;
+  vars.REG_02 = &data__->REG_02.value;
+  vars.REG_03 = &data__->REG_03.value;
+  vars.REG_04 = &data__->REG_04.value;
+  vars.REG_05 = &data__->REG_05.value;
+  vars.REG_06 = &data__->REG_06.value;
+  vars.REG_07 = &data__->REG_07.value;
+  vars.REG_08 = &data__->REG_08.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbus_read_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbus_read_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBUS_READ_ARRAY
+  VAR_INPUT
+    REQ : BOOL;
+    SLAVE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+    COILS : ARRAY [0..31] OF BOOL;
+    REGS : ARRAY [0..31] OF INT;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBUS_READ_ARRAY_VARS vars;
+  IEC_BOOL __flat_COILS[32];
+  IEC_INT __flat_REGS[32];
+  for (int __i = 0; __i < 32; __i++) __flat_COILS[__i] = data__->COILS.value.table[__i].value;
+  for (int __i = 0; __i < 32; __i++) __flat_REGS[__i] = data__->REGS.value.table[__i].value;
+  vars.REQ = &data__->REQ.value;
+  vars.SLAVE_ID = &data__->SLAVE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  vars.COILS = __flat_COILS - 0;
+  vars.REGS = __flat_REGS - 0;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbus_read_array_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbus_read_array_loop(&vars);
+  }}
+  {{
+  for (int __i = 0; __i < 32; __i++) data__->COILS.value.table[__i].value = __flat_COILS[__i];
+  for (int __i = 0; __i < 32; __i++) data__->REGS.value.table[__i].value = __flat_REGS[__i];
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBUS_WRITE
+  VAR_INPUT
+    REQ : BOOL;
+    SLAVE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+    COIL_01 : BOOL;
+    COIL_02 : BOOL;
+    COIL_03 : BOOL;
+    COIL_04 : BOOL;
+    COIL_05 : BOOL;
+    COIL_06 : BOOL;
+    COIL_07 : BOOL;
+    COIL_08 : BOOL;
+    REG_01 : INT;
+    REG_02 : INT;
+    REG_03 : INT;
+    REG_04 : INT;
+    REG_05 : INT;
+    REG_06 : INT;
+    REG_07 : INT;
+    REG_08 : INT;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBUS_WRITE_VARS vars;
+  vars.REQ = &data__->REQ.value;
+  vars.SLAVE_ID = &data__->SLAVE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.COIL_01 = &data__->COIL_01.value;
+  vars.COIL_02 = &data__->COIL_02.value;
+  vars.COIL_03 = &data__->COIL_03.value;
+  vars.COIL_04 = &data__->COIL_04.value;
+  vars.COIL_05 = &data__->COIL_05.value;
+  vars.COIL_06 = &data__->COIL_06.value;
+  vars.COIL_07 = &data__->COIL_07.value;
+  vars.COIL_08 = &data__->COIL_08.value;
+  vars.REG_01 = &data__->REG_01.value;
+  vars.REG_02 = &data__->REG_02.value;
+  vars.REG_03 = &data__->REG_03.value;
+  vars.REG_04 = &data__->REG_04.value;
+  vars.REG_05 = &data__->REG_05.value;
+  vars.REG_06 = &data__->REG_06.value;
+  vars.REG_07 = &data__->REG_07.value;
+  vars.REG_08 = &data__->REG_08.value;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbus_write_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbus_write_loop(&vars);
+  }}
+END_FUNCTION_BLOCK
+
+FUNCTION_BLOCK MODBUS_WRITE_ARRAY
+  VAR_INPUT
+    REQ : BOOL;
+    SLAVE_ID : BYTE;
+    REG_TYPE : BYTE;
+    START_ADDR : WORD;
+    LENGTH : BYTE;
+    COILS : ARRAY [0..31] OF BOOL;
+    REGS : ARRAY [0..31] OF INT;
+  END_VAR
+  VAR_OUTPUT
+    DONE : BOOL;
+    ERROR : BOOL;
+  END_VAR
+  VAR
+    hasBeenInitialized : BOOL := 0;
+  END_VAR
+
+  {{
+  MODBUS_WRITE_ARRAY_VARS vars;
+  IEC_BOOL __flat_COILS[32];
+  IEC_INT __flat_REGS[32];
+  for (int __i = 0; __i < 32; __i++) __flat_COILS[__i] = data__->COILS.value.table[__i].value;
+  for (int __i = 0; __i < 32; __i++) __flat_REGS[__i] = data__->REGS.value.table[__i].value;
+  vars.REQ = &data__->REQ.value;
+  vars.SLAVE_ID = &data__->SLAVE_ID.value;
+  vars.REG_TYPE = &data__->REG_TYPE.value;
+  vars.START_ADDR = &data__->START_ADDR.value;
+  vars.LENGTH = &data__->LENGTH.value;
+  vars.COILS = __flat_COILS - 0;
+  vars.REGS = __flat_REGS - 0;
+  vars.DONE = &data__->DONE.value;
+  vars.ERROR = &data__->ERROR.value;
+  }}
+  if hasBeenInitialized = False then
+  {{
+  modbus_write_array_setup(&vars);
+  }}
+  hasBeenInitialized := True;
+  end_if;
+  {{
+  modbus_write_array_loop(&vars);
   }}
 END_FUNCTION_BLOCK
 
 PROGRAM main
   VAR
-    MODBEE_INPUTS0 : MODBEE_INPUTS;
-    MODBEE_OUTPUTS0 : MODBEE_OUTPUTS;
+    MODBEE_HW_INPUTS0 : MODBEE_HW_INPUTS;
+    MODBEE_HW_OUTPUTS0 : MODBEE_HW_OUTPUTS;
     start : BOOL;
     stop : BOOL;
     run : BOOL;
   END_VAR
 
-  MODBEE_INPUTS0(EN := TRUE);
-  IF MODBEE_INPUTS0.ENO THEN
-      start := MODBEE_INPUTS0.DX01;
+  MODBEE_HW_INPUTS0(EN := TRUE);
+  IF MODBEE_HW_INPUTS0.ENO THEN
+      start := MODBEE_HW_INPUTS0.DX01;
   END_IF;
-  IF MODBEE_INPUTS0.ENO THEN
-      stop := MODBEE_INPUTS0.DX02;
+  IF MODBEE_HW_INPUTS0.ENO THEN
+      stop := MODBEE_HW_INPUTS0.DX02;
   END_IF;
   run := NOT(stop) AND (run OR start);
-  MODBEE_OUTPUTS0(EN := TRUE, DY01 := run);
+  MODBEE_HW_OUTPUTS0(EN := TRUE, DY01 := run);
 END_PROGRAM
 
 
 CONFIGURATION Config0
 
   RESOURCE Res0 ON PLC
-    TASK task0(INTERVAL := T#1ms,PRIORITY := 1);
+    TASK task0(INTERVAL := T#10ms,PRIORITY := 1);
     TASK Task1(INTERVAL := T#1ms,PRIORITY := 0);
     PROGRAM instance0 WITH task0 : main;
     PROGRAM instance1 WITH Task1 : modbee;
   END_RESOURCE
 END_CONFIGURATION
 
-(*DBG:char md5[] = "d8a3ed0622838c8b1228f280e6da8cc4";*)
+(*DBG:char md5[] = "f29f612bb8ce06a35209570164ee027b";*)
 (*DBG:/**)
 (*DBG: * This file is part of OpenPLC Runtime*)
 (*DBG: **)
@@ -166,13 +750,19 @@ END_CONFIGURATION
 (*DBG:*)
 (*DBG:#include <stdbool.h>*)
 (*DBG:*)
+(*DBG:// Include defines.h first for Arduino builds to set USE_*_BLOCKS macros*)
+(*DBG:// before iec_std_FB.h processes its conditional includes*)
+(*DBG:#ifdef ARDUINO*)
+(*DBG:#include "../examples/Baremetal/defines.h"*)
+(*DBG:#endif*)
+(*DBG:*)
 (*DBG:#include "iec_types_all.h"*)
 (*DBG:#include "POUS.h"*)
 (*DBG:*)
 (*DBG:#define SAME_ENDIANNESS      0*)
 (*DBG:#define REVERSE_ENDIANNESS   1*)
 (*DBG:*)
-(*DBG:char plc_program_md5[] = "d8a3ed0622838c8b1228f280e6da8cc4";*)
+(*DBG:char plc_program_md5[] = "f29f612bb8ce06a35209570164ee027b";*)
 (*DBG:*)
 (*DBG:uint8_t endianness;*)
 (*DBG:*)
@@ -184,40 +774,40 @@ END_CONFIGURATION
 (*DBG:    void *ptr;*)
 (*DBG:    __IEC_types_enum type;*)
 (*DBG:} debug_vars[] = {*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.EN), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.ENO), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX01), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX02), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX03), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX04), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX05), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX06), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX07), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX08), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX01_SCALED), REAL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX02_SCALED), REAL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX03_SCALED), REAL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX04_SCALED), REAL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_INPUTS0.HASBEENINITIALIZED), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.EN), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.ENO), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY01), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY02), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY03), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY04), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY05), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY06), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY07), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY08), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.AY01_SCALED), REAL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.AY02_SCALED), REAL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.HASBEENINITIALIZED), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.EN), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.ENO), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX01), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX02), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX03), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX04), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX05), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX06), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX07), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX08), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX01_SCALED), REAL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX02_SCALED), REAL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX03_SCALED), REAL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX04_SCALED), REAL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.HASBEENINITIALIZED), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.EN), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.ENO), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY01), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY02), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY03), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY04), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY05), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY06), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY07), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY08), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.AY01_SCALED), REAL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.AY02_SCALED), REAL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.HASBEENINITIALIZED), BOOL_ENUM},*)
 (*DBG:    {&(RES0__INSTANCE0.START), BOOL_ENUM},*)
 (*DBG:    {&(RES0__INSTANCE0.STOP), BOOL_ENUM},*)
 (*DBG:    {&(RES0__INSTANCE0.RUN), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE1.MODBEE_CONFIG0.EN), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE1.MODBEE_CONFIG0.ENO), BOOL_ENUM},*)
-(*DBG:    {&(RES0__INSTANCE1.MODBEE_CONFIG0.HASBEENINITIALIZED), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE1.MODBEE_HW_CONFIG0.EN), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE1.MODBEE_HW_CONFIG0.ENO), BOOL_ENUM},*)
+(*DBG:    {&(RES0__INSTANCE1.MODBEE_HW_CONFIG0.HASBEENINITIALIZED), BOOL_ENUM},*)
 (*DBG:};*)
 (*DBG:*)
 (*DBG:#define VAR_COUNT               34*)
@@ -234,10 +824,10 @@ END_CONFIGURATION
 (*DBG:        return 0;*)
 (*DBG:    }*)
 (*DBG:    switch (debug_vars[idx].type) {*)
-(*DBG:    case REAL_ENUM:*)
-(*DBG:        return sizeof(REAL);*)
 (*DBG:    case BOOL_ENUM:*)
 (*DBG:        return sizeof(BOOL);*)
+(*DBG:    case REAL_ENUM:*)
+(*DBG:        return sizeof(REAL);*)
 (*DBG:    default:*)
 (*DBG:        return 0;*)
 (*DBG:    }*)
@@ -248,10 +838,10 @@ END_CONFIGURATION
 (*DBG:    void *ptr = debug_vars[idx].ptr;*)
 (*DBG:*)
 (*DBG:    switch (debug_vars[idx].type) {*)
-(*DBG:    case REAL_ENUM:*)
-(*DBG:        return (void *)&((__IEC_REAL_t *) ptr)->value;*)
 (*DBG:    case BOOL_ENUM:*)
 (*DBG:        return (void *)&((__IEC_BOOL_t *) ptr)->value;*)
+(*DBG:    case REAL_ENUM:*)
+(*DBG:        return (void *)&((__IEC_REAL_t *) ptr)->value;*)
 (*DBG:    default:*)
 (*DBG:        return 0;*)
 (*DBG:    }*)
@@ -264,15 +854,15 @@ END_CONFIGURATION
 (*DBG:    if (forced) {*)
 (*DBG:        size_t var_size = get_var_size(idx);*)
 (*DBG:        switch (debug_vars[idx].type) {*)
-(*DBG:        case REAL_ENUM: {*)
-(*DBG:            memcpy(&((__IEC_REAL_t *) ptr)->value, val, var_size);*)
-(*DBG:            ((__IEC_REAL_t *) ptr)->flags |= __IEC_FORCE_FLAG;*)
-(*DBG:            break;*)
-(*DBG:        }*)
-(*DBG:    *)
 (*DBG:        case BOOL_ENUM: {*)
 (*DBG:            memcpy(&((__IEC_BOOL_t *) ptr)->value, val, var_size);*)
 (*DBG:            ((__IEC_BOOL_t *) ptr)->flags |= __IEC_FORCE_FLAG;*)
+(*DBG:            break;*)
+(*DBG:        }*)
+(*DBG:    *)
+(*DBG:        case REAL_ENUM: {*)
+(*DBG:            memcpy(&((__IEC_REAL_t *) ptr)->value, val, var_size);*)
+(*DBG:            ((__IEC_REAL_t *) ptr)->flags |= __IEC_FORCE_FLAG;*)
 (*DBG:            break;*)
 (*DBG:        }*)
 (*DBG:    *)
@@ -281,11 +871,11 @@ END_CONFIGURATION
 (*DBG:        }*)
 (*DBG:    } else {*)
 (*DBG:        switch (debug_vars[idx].type) {*)
-(*DBG:        case REAL_ENUM:*)
-(*DBG:            ((__IEC_REAL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;*)
-(*DBG:            break;*)
 (*DBG:        case BOOL_ENUM:*)
 (*DBG:            ((__IEC_BOOL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;*)
+(*DBG:            break;*)
+(*DBG:        case REAL_ENUM:*)
+(*DBG:            ((__IEC_REAL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;*)
 (*DBG:            break;*)
 (*DBG:        default:*)
 (*DBG:            break;*)

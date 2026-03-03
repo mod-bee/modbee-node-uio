@@ -20,6 +20,10 @@ public:
     static unsigned long MODBEE_RETRY_DELAY_MS;
     static unsigned long MODBEE_MAX_RETRIES;
 
+    // Robustness / self-healing
+    static unsigned long MODBEE_DISCONNECT_TIMEOUT_MS;
+    static unsigned long MODBEE_HEALTH_WATCHDOG_TIMEOUT_MS;
+
     // PROTOCOL TIMING ONLY
     static unsigned long INITIAL_LISTEN_PERIOD_MS;
     static unsigned long TOKEN_RESPONSE_TIMEOUT_MS;
@@ -82,34 +86,34 @@ public:
     
     // AUTO-SIZING Read functions (template-based for fixed arrays)
     template<size_t N>
-    bool readHreg(uint8_t nodeID, uint16_t offset, int16_t (&values)[N], uint8_t fc = 0) {
-        return readHreg_impl(nodeID, offset, values, N, fc);
+    uint32_t readHreg(uint8_t nodeID, uint16_t offset, int16_t (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr) {
+        return readHreg_impl(nodeID, offset, values, N, fc, callback);
     }
     
     template<size_t N>
-    bool readCoil(uint8_t nodeID, uint16_t offset, bool (&values)[N], uint8_t fc = 0) {
-        return readCoil_impl(nodeID, offset, values, N, fc);
+    uint32_t readCoil(uint8_t nodeID, uint16_t offset, bool (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr) {
+        return readCoil_impl(nodeID, offset, values, N, fc, callback);
     }
     
     template<size_t N>
-    bool readIreg(uint8_t nodeID, uint16_t offset, int16_t (&values)[N], uint8_t fc = 0) {
-        return readIreg_impl(nodeID, offset, values, N, fc);
+    uint32_t readIreg(uint8_t nodeID, uint16_t offset, int16_t (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr) {
+        return readIreg_impl(nodeID, offset, values, N, fc, callback);
     }
     
     template<size_t N>
-    bool readIsts(uint8_t nodeID, uint16_t offset, bool (&values)[N], uint8_t fc = 0) {
-        return readIsts_impl(nodeID, offset, values, N, fc);
+    uint32_t readIsts(uint8_t nodeID, uint16_t offset, bool (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr) {
+        return readIsts_impl(nodeID, offset, values, N, fc, callback);
     }
     
     // AUTO-SIZING Write functions (template-based for fixed arrays)
     template<size_t N>
-    bool writeHreg(uint8_t nodeID, uint16_t offset, const int16_t (&values)[N], uint8_t fc = 0) {
-        return writeHreg_impl(nodeID, offset, values, N, fc);
+    uint32_t writeHreg(uint8_t nodeID, uint16_t offset, const int16_t (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr) {
+        return writeHreg_impl(nodeID, offset, values, N, fc, callback);
     }
     
     template<size_t N>
-    bool writeCoil(uint8_t nodeID, uint16_t offset, const bool (&values)[N], uint8_t fc = 0) {
-        return writeCoil_impl(nodeID, offset, values, N, fc);
+    uint32_t writeCoil(uint8_t nodeID, uint16_t offset, const bool (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr) {
+        return writeCoil_impl(nodeID, offset, values, N, fc, callback);
     }
     
     // =============================================================================
@@ -117,28 +121,28 @@ public:
     // =============================================================================
     
     // Manual read functions (pointer-based for dynamic arrays)
-    bool readHregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc = 0);
-    bool readCoilManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc = 0);
-    bool readIregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc = 0);
-    bool readIstsManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc = 0);
+    uint32_t readHregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t readCoilManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t readIregManual(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t readIstsManual(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
     
     // Manual write functions (pointer-based for dynamic arrays)
-    bool writeHregManual(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc = 0);
-    bool writeCoilManual(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc = 0);
+    uint32_t writeHregManual(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t writeCoilManual(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
     
     // =============================================================================
     // SINGLE VALUE FUNCTIONS - No conflicts with templates
     // =============================================================================
     
-    // Single value read functions (reference-based)
-    bool readHreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc = 0);
-    bool readCoil(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc = 0);
-    bool readIreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc = 0);
-    bool readIsts(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc = 0);
+    // Single value read functions (reference-based) - return operation ID
+    uint32_t readHreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t readCoil(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t readIreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t readIsts(uint8_t nodeID, uint16_t offset, bool& value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
     
-    // Single value write functions (value-based)
-    bool writeHreg(uint8_t nodeID, uint16_t offset, int16_t value, uint8_t fc = 0);
-    bool writeCoil(uint8_t nodeID, uint16_t offset, bool value, uint8_t fc = 0);
+    // Single value write functions (value-based) - return operation ID
+    uint32_t writeHreg(uint8_t nodeID, uint16_t offset, int16_t value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
+    uint32_t writeCoil(uint8_t nodeID, uint16_t offset, bool value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr);
     
     // =============================================================================
     // UTILITY AND STATUS FUNCTIONS
@@ -161,10 +165,10 @@ private:
     void (*_debugHandler)(const char* category, const char* message);
 
     // Implementation methods for templates
-    bool readHreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc);
-    bool readCoil_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc);
-    bool readIreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc);
-    bool readIsts_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc);
-    bool writeHreg_impl(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc);
-    bool writeCoil_impl(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc);
+    uint32_t readHreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numregs, uint8_t fc, ModBeeCompletionCallback callback);
+    uint32_t readCoil_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numcoils, uint8_t fc, ModBeeCompletionCallback callback);
+    uint32_t readIreg_impl(uint8_t nodeID, uint16_t offset, int16_t* values, uint16_t numiregs, uint8_t fc, ModBeeCompletionCallback callback);
+    uint32_t readIsts_impl(uint8_t nodeID, uint16_t offset, bool* values, uint16_t numists, uint8_t fc, ModBeeCompletionCallback callback);
+    uint32_t writeHreg_impl(uint8_t nodeID, uint16_t offset, const int16_t* values, uint16_t numregs, uint8_t fc, ModBeeCompletionCallback callback);
+    uint32_t writeCoil_impl(uint8_t nodeID, uint16_t offset, const bool* values, uint16_t numcoils, uint8_t fc, ModBeeCompletionCallback callback);
 };

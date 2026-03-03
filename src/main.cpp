@@ -4,16 +4,12 @@
 // Initialize ESP32Modbee for standalone use
 ESP32Modbee io(
   MB_NONE,            // mode
-  LED_PIN,            // ledPin
-  37, 38,             // sdaPin, sclPin
   18, 17,             // modbusRxPin, modbusTxPin
   1,                  // modbusId
   16, 15,             // modbeeRxPin, modbeeTxPin 
-  5,                  // modbeeId
+  1,                  // modbeeId
   115200, SERIAL_8N1, // baudrate1, serialConfig1 //Modbus
-  &Serial1,           // serialPort1
-  115200, SERIAL_8N1, // baudrate2, serialConfig2 //ModBee
-  &Serial2            // serialPort2
+  115200, SERIAL_8N1  // baudrate2, serialConfig2 //ModBee
 );
 
 // Initialize ModbeeWebServer
@@ -46,6 +42,8 @@ void setup() {
   io.setADCMode(3, MODE_VOLTAGE); // AI04
   io.setDACMode(0, MODE_VOLTAGE); // AO01
   io.setDACMode(1, MODE_VOLTAGE); // AO02
+
+  io.hatPower = true; // Power on the HAT by default
 }
 
 void loop() {

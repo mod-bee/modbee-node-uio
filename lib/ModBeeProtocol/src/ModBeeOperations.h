@@ -6,6 +6,10 @@
  * Based on the actual implementation in ModBeeOperations.cpp
  */
 class ModBeeOperations {
+private:
+    // Operation ID generator
+    static uint32_t nextOperationId;
+    
 public:
     // =============================================================================
     // CONSTRUCTOR AND DESTRUCTOR
@@ -16,7 +20,7 @@ public:
     // =============================================================================
     // OPERATION MANAGEMENT
     // =============================================================================
-    void addPendingOperation(const PendingModbusOp& op, ModBeeProtocol& protocol);
+    uint32_t addPendingOperation(PendingModbusOp op, ModBeeProtocol& protocol);
     void addPendingResponse(const PendingResponse& response);
     void removePendingOperation(const PendingModbusOp& op);
     void removePendingResponse(const ModbusRequest& response);

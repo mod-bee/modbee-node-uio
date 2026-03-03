@@ -349,35 +349,87 @@ void loop() {
 
 See [API_REFERENCE.md](API_REFERENCE.md) for complete Modbus API.
 
+## Operating Modes
+
+The ModBee Node-UIO supports **five distinct operating modes** that control how outputs are controlled and which protocols have access. These modes prevent conflicts where multiple protocols try to control the same outputs simultaneously.
+
+### Mode Overview
+
+| Mode | Modbus RTU | ModBee Protocol | Output Control | Use Case |
+|------|------------|-----------------|---------------|----------|
+| `MB_NONE` | ❌ Disabled | ✅ Optional | Local only | Standalone device |
+| `MB_SLAVE` | ✅ Slave mode | ✅ Optional | Modbus master | Industrial controller |
+| `MB_MASTER` | ✅ Master mode | ✅ Optional | Local only | Control other devices |
+| `MB_REMOTE_IO` | ✅ Master mode | ❌ Disabled | Modbus master | Remote I/O for PLC |
+| `MBEE_REMOTE_IO` | ❌ Disabled | ✅ Required | ModBee network | Distributed I/O network |
+
+### Detailed Mode Explanations
+
+#### `MB_NONE` - Standalone Mode
+- **Modbus RTU**: Completely disabled
+- **ModBee Protocol**: Can be enabled (optional)
+- **Output Control**: Local application only
+- **Use Case**: Standalone device with local control, no network protocols
+- **RS485 Usage**: Both channels available for custom serial protocols
+
+#### `MB_SLAVE` - Modbus Slave Mode
+- **Modbus RTU**: Slave mode (responds to master requests)
+- **ModBee Protocol**: Can be enabled (optional)
+- **Output Control**: Modbus master controls outputs
+- **Use Case**: Standard industrial Modbus device controlled by PLC/SCADA
+- **RS485 Usage**: CH1 = Modbus RTU, CH2 = ModBee or custom serial
+
+#### `MB_MASTER` - Modbus Master Mode
+- **Modbus RTU**: Master mode (polls slave devices)
+- **ModBee Protocol**: Can be enabled (optional)
+- **Output Control**: Local application only
+- **Use Case**: Controller that commands other Modbus devices
+- **RS485 Usage**: CH1 = Modbus RTU, CH2 = ModBee or custom serial
+
+#### `MB_REMOTE_IO` - Modbus Remote I/O Mode
+- **Modbus RTU**: Master mode with special remote I/O behavior
+- **ModBee Protocol**: Disabled (conflicts with Modbus)
+- **Output Control**: Modbus master controls outputs
+- **Use Case**: Remote I/O module for PLC systems
+- **RS485 Usage**: CH1 = Modbus RTU (remote I/O protocol)
+
+#### `MBEE_REMOTE_IO` - ModBee Remote I/O Mode
+- **Modbus RTU**: Disabled (conflicts with ModBee)
+- **ModBee Protocol**: Required and enabled
+- **Output Control**: ModBee network controls outputs
+- **Use Case**: Distributed I/O in ModBee peer-to-peer networks
+- **RS485 Usage**: Both channels used for ModBee protocol
+
+### Output Control Priority System
+
+The ModBee Node-UIO implements a **priority system** to prevent multiple protocols from controlling outputs simultaneously:
+
+1. **Remote I/O modes** (`MB_REMOTE_IO`, `MBEE_REMOTE_IO`): Network protocols have exclusive control
+2. **Slave modes** (`MB_SLAVE`): Modbus master has control, local code can only read
+3. **Local modes** (`MB_NONE`, `MB_MASTER`): Local application has full control
+
+**This prevents conflicts where:**
+- A Modbus master tries to control outputs while local code also writes to them
+- ModBee network and Modbus both try to control the same outputs
+- Multiple masters fight for control of the same device
+
+### Choosing the Right Mode
+
+| Application | Recommended Mode | Why |
+|-------------|------------------|-----|
+| Standalone sensor/logger | `MB_NONE` | Local control only, no network conflicts |
+| PLC controlled device | `MB_SLAVE` | Standard Modbus slave for industrial control |
+| Device controller/gateway | `MB_MASTER` | Controls other devices, local output control |
+| PLC remote I/O module | `MB_REMOTE_IO` | Modbus master controls outputs exclusively |
+| Distributed I/O network | `MBEE_REMOTE_IO` | ModBee network controls outputs exclusively |
+
 ## ModBee Protocol is Optional
 
-The ModBee Node-UIO supports **two independent operating modes**. Choose based on your application:
-
-### Mode 1: Modbus RTU Only (Standard Industrial)
-- **RS485 CH1** uses Modbus RTU protocol (master or slave)
-- **RS485 CH2** remains unused or can be configured for other purposes
-- Minimal firmware overhead
-- Compatible with any standard Modbus controller
-- **Constructor:** `ESP32Modbee io(MB_MASTER, ...)` or `ESP32Modbee io(MB_SLAVE, ...)`
-- **Recommended for:** Direct integration with industrial controllers, PLC networks
-
-### Mode 2: ModBee Peer-to-Peer Network (Optional)
-Multiple ModBee devices can form a self-healing peer-to-peer network:
-
-1. **Set different node IDs** for each device (in constructor)
-2. **Connect all devices to same RS485 bus**
-3. **Devices automatically discover and form network**
-4. **Any device can send data** (token-passing protocol)
-5. **Network auto-heals** if a device disconnects
-
-- **Constructor:** `ESP32Modbee io(MB_NONE, ...)` (disables Modbus)
-- **Best for:** Distributed device networks that don't require a central controller
-
-### Mode 3: RS485 CH2 as Generic Serial
-- RS485 CH2 can be repurposed as a standard serial interface with **minimal code changes**
-- Use `Serial2` directly for custom protocols (e.g., additional Modbus network, proprietary serial)
-- Example: Run Modbus RTU on CH1 + custom protocol on CH2
-- See [SOFTWARE.md](SOFTWARE.md) for implementation details
+The ModBee peer-to-peer protocol is entirely **optional**. You can:
+- Run **Modbus RTU only** (standard industrial mode) without enabling ModBee
+- Use ModBee networking for peer-to-peer device communication
+- Use RS485 CH2 as a generic serial interface alongside Modbus on CH1
+- Use MB_NONE mode to disable Modbus and use RS485 for custom protocols
 
 **To use ModBee networking, see [SOFTWARE.md](SOFTWARE.md) for protocol details.**
 

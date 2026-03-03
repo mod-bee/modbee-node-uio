@@ -1,5 +1,8 @@
 #include "ModBeeGlobal.h"
 
+// Initialize static operation ID counter with timestamp seed for uniqueness
+uint32_t ModBeeOperations::nextOperationId = (uint32_t)(millis() % 1000000) + 1;
+
 // =============================================================================
 // CONSTRUCTOR AND DESTRUCTOR
 // =============================================================================
@@ -18,11 +21,29 @@ ModBeeOperations::~ModBeeOperations() {
 // =============================================================================
 // OPERATION MANAGEMENT
 // =============================================================================
-void ModBeeOperations::addPendingOperation(const PendingModbusOp& op, ModBeeProtocol& protocol) {
+uint32_t ModBeeOperations::addPendingOperation(PendingModbusOp op, ModBeeProtocol& protocol) {
+    // Assign unique operation ID - ensure no collision with existing operations
+    uint32_t candidateId = nextOperationId++;
+    bool idUnique = false;
+    
+    // Check for ID uniqueness (prevent theoretical collisions)
+    while (!idUnique) {
+        idUnique = true;
+        for (const auto& existingOp : _pendingOps) {
+            if (existingOp.operationId == candidateId) {
+                idUnique = false;
+                candidateId = nextOperationId++;  // Try next ID
+                break;
+            }
+        }
+    }
+    
+    op.operationId = candidateId;
+    
     // Check if we already have too many pending operations
     if (_pendingOps.size() >= MODBEE_MAX_PENDING_OPS) {
         protocol.reportError(MBEE_BUFFER_OVERFLOW, "Too many pending operations");
-        return;
+        return 0;
     }
     
     // Check for EXACT duplicate - don't refresh timestamp
@@ -32,15 +53,17 @@ void ModBeeOperations::addPendingOperation(const PendingModbusOp& op, ModBeeProt
             existingOp.req.startAddr == op.req.startAddr &&
             existingOp.req.quantity == op.req.quantity) {
             // Don't refresh - just reject duplicate
-            return;
+            return 0;
         }
     }
     
     // Add operation
     _pendingOps.push_back(op);
     
-    MBEE_DEBUG_OPERATIONS("ADDED: Op %d/%d - Node:%d FC:%02X Addr:%d Qty:%d", 
-        _pendingOps.size(), MODBEE_MAX_PENDING_OPS, op.destNodeID, op.req.function, op.req.startAddr, op.req.quantity);
+    MBEE_DEBUG_OPERATIONS("ADDED: Op %d/%d ID:%u - Node:%d FC:%02X Addr:%d Qty:%d", 
+        _pendingOps.size(), MODBEE_MAX_PENDING_OPS, op.operationId, op.destNodeID, op.req.function, op.req.startAddr, op.req.quantity);
+
+    return op.operationId;
 }
 
 void ModBeeOperations::addPendingResponse(const PendingResponse& response) {
@@ -460,7 +483,7 @@ bool ModBeeOperations::matchAndFulfillResponse(const ModbusRequest& response, ui
         
         // Call completion callback if provided
         if (matchingOp->onComplete) {
-            matchingOp->onComplete();
+            matchingOp->onComplete(matchingOp->operationId);
         }
         
         // Remove the fulfilled operation

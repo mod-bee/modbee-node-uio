@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "name": "Modbee-MB-Master-Array",
+    "type": "plc-project"
+  },
+  "data": {
+    "dataTypes": [],
+    "pous": [],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#10ms",
+            "priority": 1
+          },
+          {
+            "name": "Task1",
+            "triggering": "Cyclic",
+            "interval": "T#1ms",
+            "priority": 0
+          }
+        ],
+        "instances": [
+          {
+            "name": "instance0",
+            "task": "task0",
+            "program": "main"
+          },
+          {
+            "name": "instance1",
+            "task": "Task1",
+            "program": "modbee"
+          }
+        ],
+        "globalVariables": []
+      }
+    },
+    "debugVariables": {
+      "pous": {
+        "main": [
+          "MB_SLAVE_DO",
+          "MB_SLAVE_DI",
+          "MB_SLAVE_AI",
+          "MB_SLAVE_AO_TEMP"
+        ]
+      }
+    },
+    "deletedPous": [],
+    "deletedServers": [],
+    "deletedRemoteDevices": []
+  }
+}

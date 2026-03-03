@@ -1,14 +1,10 @@
 #include "ESP32Modbee.h"
-#include "ModbeeProtocolGlobal.h"
 
 // Optional debugging (uncomment to enable)
 // #define debugf(...) Serial.printf(__VA_ARGS__)
 
 ESP32Modbee::ESP32Modbee(
   uint8_t mode,
-  uint8_t ledPin,
-  uint8_t sdaPin,
-  uint8_t sclPin,
   uint8_t modbusRxPin,
   uint8_t modbusTxPin,
   uint8_t modbusId,
@@ -17,25 +13,23 @@ ESP32Modbee::ESP32Modbee(
   uint8_t modbeeId,
   uint32_t baudrate1,
   uint32_t serialConfig1,
-  HardwareSerial* serialPort1,
   uint32_t baudrate2,
-  uint32_t serialConfig2,
-  HardwareSerial* serialPort2
+  uint32_t serialConfig2
 ) : _mode(mode),
-    _ledPin(ledPin),
-    _sdaPin(sdaPin),
-    _sclPin(sclPin),
+    _ledPin(LED_PIN),
+    _sdaPin(37),
+    _sclPin(38),
     _modbusRxPin(modbusRxPin),
     _modbusTxPin(modbusTxPin),
     _baudrate1(baudrate1),
     _serialConfig1(serialConfig1),
-    _serialPort1(serialPort1),
+    _serialPort1(&Serial1),
     _modbeeID(modbeeId),
     _modbeeRxPin(modbeeRxPin),
     _modbeeTxPin(modbeeTxPin),
     _baudrate2(baudrate2),
     _serialConfig2(serialConfig2),
-    _serialPort2(serialPort2),
+    _serialPort2(&Serial2),
     _ads(0x49, &Wire1),
     _dac(RESOLUTION_15_BIT, 0x5F, &Wire1),
     modbusID(modbusId),
@@ -58,12 +52,25 @@ ESP32Modbee::ESP32Modbee(
     DO06(false),
     DO07(false),
     DO08(false),
+    hatPower(false),
     AI01_Scaled(0),
     AI02_Scaled(0),
     AI03_Scaled(0),
     AI04_Scaled(0),
     AO01_Scaled(0),
-    AO02_Scaled(0) {
+    AO02_Scaled(0),
+    mbeeTempDO01(false),
+    mbeeTempDO02(false),
+    mbeeTempDO03(false),
+    mbeeTempDO04(false),
+    mbeeTempDO05(false),
+    mbeeTempDO06(false),
+    mbeeTempDO07(false),
+    mbeeTempDO08(false),
+    mbeeTempAO01_Scaled(0),
+    mbeeTempAO02_Scaled(0),
+    mbeeTempAO01_Raw(0),
+    mbeeTempAO02_Raw(0) {
   _adcModes[AI01] = MODE_VOLTAGE;
   _adcModes[AI02] = MODE_VOLTAGE;
   _adcModes[AI03] = MODE_VOLTAGE;
@@ -123,8 +130,12 @@ void ESP32Modbee::begin() {
   _initLittleFS();
   _loadCalibration();
 
+  // Initialize hatPower pin
+  pinMode(_hatPowerPin, OUTPUT);
+  digitalWrite(_hatPowerPin, LOW);
+
   // Initialize Modbus
-  if (_mode != MB_NONE) {
+  if (_mode == MB_MASTER || _mode == MB_SLAVE || _mode == MB_REMOTE_IO) {
     _serialPort1->begin(_baudrate1, _serialConfig1, _modbusRxPin, _modbusTxPin);
     mb.begin(_serialPort1);
 
@@ -223,63 +234,64 @@ void ESP32Modbee::begin() {
 
   _serialPort2->begin(_baudrate2, _serialConfig2, _modbeeRxPin, _modbeeTxPin);
 
-  modbee.begin(_serialPort2, _modbeeID);
+  mbee.begin(_serialPort2, _modbeeID);
 
-  modbee.addCoil(mbDO01, &DO01);
-  modbee.addCoil(mbDO02, &DO02);
-  modbee.addCoil(mbDO03, &DO03);
-  modbee.addCoil(mbDO04, &DO04);
-  modbee.addCoil(mbDO05, &DO05);
-  modbee.addCoil(mbDO06, &DO06);
-  modbee.addCoil(mbDO07, &DO07);
-  modbee.addCoil(mbDO08, &DO08);
-
-  modbee.addIsts(mbDI01, &DI01);
-  modbee.addIsts(mbDI02, &DI02);
-  modbee.addIsts(mbDI03, &DI03);
-  modbee.addIsts(mbDI04, &DI04);
-  modbee.addIsts(mbDI05, &DI05);
-  modbee.addIsts(mbDI06, &DI06);
-  modbee.addIsts(mbDI07, &DI07);
-  modbee.addIsts(mbDI08, &DI08);
-
-  modbee.addIreg(mbAI01_SCALED, &AI01_Scaled);
-  modbee.addIreg(mbAI02_SCALED, &AI02_Scaled);
-  modbee.addIreg(mbAI03_SCALED, &AI03_Scaled);
-  modbee.addIreg(mbAI04_SCALED, &AI04_Scaled);
-  modbee.addIreg(mbAI01_RAW, &AI01_Raw);
-  modbee.addIreg(mbAI02_RAW, &AI02_Raw);
-  modbee.addIreg(mbAI03_RAW, &AI03_Raw);
-  modbee.addIreg(mbAI04_RAW, &AI04_Raw);
-
-  modbee.addHreg(mbAO01_SCALED, &AO01_Scaled);
-  modbee.addHreg(mbAO02_SCALED, &AO02_Scaled);
-  modbee.addHreg(mbAO01_RAW, &AO01_Raw);
-  modbee.addHreg(mbAO02_RAW, &AO02_Raw);
+  // Map to temp variables to avoid conflicts - ModBee updates temps only
+  mbee.addCoil(mbDO01, &mbeeTempDO01);
+  mbee.addCoil(mbDO02, &mbeeTempDO02);
+  mbee.addCoil(mbDO03, &mbeeTempDO03);
+  mbee.addCoil(mbDO04, &mbeeTempDO04);
+  mbee.addCoil(mbDO05, &mbeeTempDO05);
+  mbee.addCoil(mbDO06, &mbeeTempDO06);
+  mbee.addCoil(mbDO07, &mbeeTempDO07);
+  mbee.addCoil(mbDO08, &mbeeTempDO08);
+  // Digital inputs map to actual variables - remote can read them
+  mbee.addIsts(mbDI01, &DI01);
+  mbee.addIsts(mbDI02, &DI02);
+  mbee.addIsts(mbDI03, &DI03);
+  mbee.addIsts(mbDI04, &DI04);
+  mbee.addIsts(mbDI05, &DI05);
+  mbee.addIsts(mbDI06, &DI06);
+  mbee.addIsts(mbDI07, &DI07);
+  mbee.addIsts(mbDI08, &DI08);
+  // Analog inputs map to actual variables - remote can read them
+  mbee.addIreg(mbAI01_SCALED, &AI01_Scaled);
+  mbee.addIreg(mbAI02_SCALED, &AI02_Scaled);
+  mbee.addIreg(mbAI03_SCALED, &AI03_Scaled);
+  mbee.addIreg(mbAI04_SCALED, &AI04_Scaled);
+  mbee.addIreg(mbAI01_RAW, &AI01_Raw);
+  mbee.addIreg(mbAI02_RAW, &AI02_Raw);
+  mbee.addIreg(mbAI03_RAW, &AI03_Raw);
+  mbee.addIreg(mbAI04_RAW, &AI04_Raw);
+  // Map to temp variables for analog outputs - we read from remote instead
+  mbee.addHreg(mbAO01_SCALED, &mbeeTempAO01_Scaled);
+  mbee.addHreg(mbAO02_SCALED, &mbeeTempAO02_Scaled);
+  mbee.addHreg(mbAO01_RAW, &mbeeTempAO01_Raw);
+  mbee.addHreg(mbAO02_RAW, &mbeeTempAO02_Raw);
 
   // --- Calibration registers ---
-  modbee.addHreg(mbCAL_ZERO_OFFSET_ADC0, &_calZeroOffsetADC[AI01]);
-  modbee.addHreg(mbCAL_ZERO_OFFSET_ADC1, &_calZeroOffsetADC[AI02]);
-  modbee.addHreg(mbCAL_ZERO_OFFSET_ADC2, &_calZeroOffsetADC[AI03]);
-  modbee.addHreg(mbCAL_ZERO_OFFSET_ADC3, &_calZeroOffsetADC[AI04]);
-  modbee.addHreg(mbCAL_ZERO_OFFSET_DAC0, &_calZeroOffsetDAC[AO01]);
-  modbee.addHreg(mbCAL_ZERO_OFFSET_DAC1, &_calZeroOffsetDAC[AO02]);
+  mbee.addHreg(mbCAL_ZERO_OFFSET_ADC0, &_calZeroOffsetADC[AI01]);
+  mbee.addHreg(mbCAL_ZERO_OFFSET_ADC1, &_calZeroOffsetADC[AI02]);
+  mbee.addHreg(mbCAL_ZERO_OFFSET_ADC2, &_calZeroOffsetADC[AI03]);
+  mbee.addHreg(mbCAL_ZERO_OFFSET_ADC3, &_calZeroOffsetADC[AI04]);
+  mbee.addHreg(mbCAL_ZERO_OFFSET_DAC0, &_calZeroOffsetDAC[AO01]);
+  mbee.addHreg(mbCAL_ZERO_OFFSET_DAC1, &_calZeroOffsetDAC[AO02]);
 
-  modbee.addHreg(mbCAL_LOW_ADC0, &_calLowADC[AI01]);
-  modbee.addHreg(mbCAL_LOW_ADC1, &_calLowADC[AI02]);
-  modbee.addHreg(mbCAL_LOW_ADC2, &_calLowADC[AI03]);
-  modbee.addHreg(mbCAL_LOW_ADC3, &_calLowADC[AI04]);
+  mbee.addHreg(mbCAL_LOW_ADC0, &_calLowADC[AI01]);
+  mbee.addHreg(mbCAL_LOW_ADC1, &_calLowADC[AI02]);
+  mbee.addHreg(mbCAL_LOW_ADC2, &_calLowADC[AI03]);
+  mbee.addHreg(mbCAL_LOW_ADC3, &_calLowADC[AI04]);
 
-  modbee.addHreg(mbCAL_HIGH_ADC0, &_calHighADC[AI01]);
-  modbee.addHreg(mbCAL_HIGH_ADC1, &_calHighADC[AI02]);
-  modbee.addHreg(mbCAL_HIGH_ADC2, &_calHighADC[AI03]);
-  modbee.addHreg(mbCAL_HIGH_ADC3, &_calHighADC[AI04]);
+  mbee.addHreg(mbCAL_HIGH_ADC0, &_calHighADC[AI01]);
+  mbee.addHreg(mbCAL_HIGH_ADC1, &_calHighADC[AI02]);
+  mbee.addHreg(mbCAL_HIGH_ADC2, &_calHighADC[AI03]);
+  mbee.addHreg(mbCAL_HIGH_ADC3, &_calHighADC[AI04]);
 
-  modbee.addHreg(mbCAL_LOW_DAC0, &_calLowDAC[AO01]);
-  modbee.addHreg(mbCAL_LOW_DAC1, &_calLowDAC[AO02]);
+  mbee.addHreg(mbCAL_LOW_DAC0, &_calLowDAC[AO01]);
+  mbee.addHreg(mbCAL_LOW_DAC1, &_calLowDAC[AO02]);
 
-  modbee.addHreg(mbCAL_HIGH_DAC0, &_calHighDAC[AO01]);
-  modbee.addHreg(mbCAL_HIGH_DAC1, &_calHighDAC[AO02]);
+  mbee.addHreg(mbCAL_HIGH_DAC0, &_calHighDAC[AO01]);
+  mbee.addHreg(mbCAL_HIGH_DAC1, &_calHighDAC[AO02]);
 
   // Initialize digital I/O pins
   for (uint8_t i = 0; i < 8; i++) {
@@ -290,12 +302,12 @@ void ESP32Modbee::begin() {
 }
 
 void ESP32Modbee::update() {
-  if (_mode != MB_NONE) {
+  if (_mode == MB_MASTER || _mode == MB_SLAVE || _mode == MB_REMOTE_IO) {
     mb.task();
   }
 
   // Modbee Protocol
-  modbee.loop();
+  mbee.loop();
 
   // Digital Inputs
   DI01 = digitalRead(_digitalInputPins[0]);
@@ -307,15 +319,64 @@ void ESP32Modbee::update() {
   DI07 = digitalRead(_digitalInputPins[6]);
   DI08 = digitalRead(_digitalInputPins[7]);
 
-  // Digital Outputs    
-  digitalWrite(_digitalOutputPins[0], DO01);
-  digitalWrite(_digitalOutputPins[1], DO02);
-  digitalWrite(_digitalOutputPins[2], DO03);
-  digitalWrite(_digitalOutputPins[3], DO04);
-  digitalWrite(_digitalOutputPins[4], DO05);
-  digitalWrite(_digitalOutputPins[5], DO06);
-  digitalWrite(_digitalOutputPins[6], DO07);
-  digitalWrite(_digitalOutputPins[7], DO08);
+  if (_mode == MB_REMOTE_IO) {
+    mb.Ists(mbDI01, DI01);
+    mb.Ists(mbDI02, DI02);
+    mb.Ists(mbDI03, DI03);
+    mb.Ists(mbDI04, DI04);
+    mb.Ists(mbDI05, DI05);
+    mb.Ists(mbDI06, DI06);
+    mb.Ists(mbDI07, DI07);
+    mb.Ists(mbDI08, DI08);
+  }
+  // Note: MBEE_REMOTE_IO handles input writes via modbee.loop() and mapped variables
+  // No additional write needed here - ModBee library manages it
+
+  // Digital Outputs
+  bool tempDO01, tempDO02, tempDO03, tempDO04, tempDO05, tempDO06, tempDO07, tempDO08;
+  if (_mode == MB_REMOTE_IO) {
+    tempDO01 = mb.Coil(mbDO01);
+    tempDO02 = mb.Coil(mbDO02);
+    tempDO03 = mb.Coil(mbDO03);
+    tempDO04 = mb.Coil(mbDO04);
+    tempDO05 = mb.Coil(mbDO05);
+    tempDO06 = mb.Coil(mbDO06);
+    tempDO07 = mb.Coil(mbDO07);
+    tempDO08 = mb.Coil(mbDO08);
+  } else if (_mode == MBEE_REMOTE_IO) {
+    // Use mapped temp variables (automatically updated by ModBee when remote writes)
+    tempDO01 = mbeeTempDO01;
+    tempDO02 = mbeeTempDO02;
+    tempDO03 = mbeeTempDO03;
+    tempDO04 = mbeeTempDO04;
+    tempDO05 = mbeeTempDO05;
+    tempDO06 = mbeeTempDO06;
+    tempDO07 = mbeeTempDO07;
+    tempDO08 = mbeeTempDO08;
+  } else {
+    // User mode: use direct local variables
+    tempDO01 = DO01;
+    tempDO02 = DO02;
+    tempDO03 = DO03;
+    tempDO04 = DO04;
+    tempDO05 = DO05;
+    tempDO06 = DO06;
+    tempDO07 = DO07;
+    tempDO08 = DO08;
+  }
+    
+  digitalWrite(_digitalOutputPins[0], tempDO01);
+  digitalWrite(_digitalOutputPins[1], tempDO02);
+  digitalWrite(_digitalOutputPins[2], tempDO03);
+  digitalWrite(_digitalOutputPins[3], tempDO04);
+  digitalWrite(_digitalOutputPins[4], tempDO05);
+  digitalWrite(_digitalOutputPins[5], tempDO06);
+  digitalWrite(_digitalOutputPins[6], tempDO07);
+  digitalWrite(_digitalOutputPins[7], tempDO08);
+
+  // Hat Power Output
+  // IMPORTANT: Hat power is LOCAL-ONLY (not controllable via Modbus/ModBee).
+  digitalWrite(_hatPowerPin, hatPower);
 
   // Analog Inputs - ASYNC WITH TIMER
   if (_adsInitialized) {
@@ -334,7 +395,7 @@ void ESP32Modbee::update() {
             AI01_Raw = rawValue;
             if (rawValue < 0) rawValue = 0;
             AI01_Scaled = _scaleADC(AI01, rawValue);
-            if (_mode == MB_SLAVE) {
+            if (_mode == MB_REMOTE_IO) {
               mb.Ireg(mbAI01_SCALED, AI01_Scaled);
               mb.Ireg(mbAI01_RAW, rawValue);
             }
@@ -344,7 +405,7 @@ void ESP32Modbee::update() {
             AI02_Raw = rawValue;
             if (rawValue < 0) rawValue = 0;
             AI02_Scaled = _scaleADC(AI02, rawValue);
-            if (_mode == MB_SLAVE) {
+            if (_mode == MB_REMOTE_IO) {
               mb.Ireg(mbAI02_SCALED, AI02_Scaled);
               mb.Ireg(mbAI02_RAW, rawValue);
             }
@@ -354,7 +415,7 @@ void ESP32Modbee::update() {
             AI03_Raw = rawValue;
             if (rawValue < 0) rawValue = 0;
             AI03_Scaled = _scaleADC(AI03, rawValue);
-            if (_mode == MB_SLAVE) {
+            if (_mode == MB_REMOTE_IO) {
               mb.Ireg(mbAI03_SCALED, AI03_Scaled);
               mb.Ireg(mbAI03_RAW, rawValue);
             }
@@ -364,7 +425,7 @@ void ESP32Modbee::update() {
             AI04_Raw = rawValue;
             if (rawValue < 0) rawValue = 0;
             AI04_Scaled = _scaleADC(AI04, rawValue);
-            if (_mode == MB_SLAVE) {
+            if (_mode == MB_REMOTE_IO) {
               mb.Ireg(mbAI04_SCALED, AI04_Scaled);
               mb.Ireg(mbAI04_RAW, rawValue);
             }
@@ -386,31 +447,50 @@ void ESP32Modbee::update() {
   }
 
   // Analog Outputs
+  int16_t tempAO01_Scaled, tempAO02_Scaled, tempAO01_Raw, tempAO02_Raw;
+  if (_mode == MB_REMOTE_IO) {
+    tempAO01_Scaled = mb.Hreg(mbAO01_SCALED);
+    tempAO02_Scaled = mb.Hreg(mbAO02_SCALED);
+    tempAO01_Raw = mb.Hreg(mbAO01_RAW);
+    tempAO02_Raw = mb.Hreg(mbAO02_RAW);
+  } else if (_mode == MBEE_REMOTE_IO) {
+    // Use mapped temp variables (automatically updated by ModBee when remote writes)
+    tempAO01_Scaled = mbeeTempAO01_Scaled;
+    tempAO02_Scaled = mbeeTempAO02_Scaled;
+    tempAO01_Raw = mbeeTempAO01_Raw;
+    tempAO02_Raw = mbeeTempAO02_Raw;
+  } else {
+    // User mode: use direct local variables
+    tempAO01_Scaled = AO01_Scaled;
+    tempAO02_Scaled = AO02_Scaled;
+    tempAO01_Raw = AO01_Raw;
+    tempAO02_Raw = AO02_Raw;
+  }
   if (_dacInitialized) {
-    // If AO01_Scaled changed, update AO01_Raw and DAC
-    int16_t new_ao01_raw = _scaleDAC(AO01, AO01_Scaled);
-    if (new_ao01_raw != AO01_Raw) {
-      AO01_Raw = new_ao01_raw;
-      _dac.setDACOutVoltage(AO01_Raw, 0);
+    // If tempAO01_Scaled changed, update tempAO01_Raw and DAC
+    int16_t new_ao01_raw = _scaleDAC(AO01, tempAO01_Scaled);
+    if (new_ao01_raw != tempAO01_Raw) {
+      tempAO01_Raw = new_ao01_raw;
+      _dac.setDACOutVoltage(tempAO01_Raw, 0);
     }
-    // If AO01_Raw changed (e.g. via Modbus), update AO01_Scaled and DAC
-    int16_t new_ao01_scaled = AO01_Scaled;
-    if (AO01_Raw != _scaleDAC(AO01, AO01_Scaled)) {
-      new_ao01_scaled = _inverseScaleDAC(AO01, AO01_Raw);
-      AO01_Scaled = new_ao01_scaled;
-      _dac.setDACOutVoltage(AO01_Raw, 0);
+    // If tempAO01_Raw changed (e.g. via Modbus), update tempAO01_Scaled and DAC
+    int16_t new_ao01_scaled = tempAO01_Scaled;
+    if (tempAO01_Raw != _scaleDAC(AO01, tempAO01_Scaled)) {
+      new_ao01_scaled = _inverseScaleDAC(AO01, tempAO01_Raw);
+      tempAO01_Scaled = new_ao01_scaled;
+      _dac.setDACOutVoltage(tempAO01_Raw, 0);
     }
 
-    int16_t new_ao02_raw = _scaleDAC(AO02, AO02_Scaled);
-    if (new_ao02_raw != AO02_Raw) {
-      AO02_Raw = new_ao02_raw;
-      _dac.setDACOutVoltage(AO02_Raw, 1);
+    int16_t new_ao02_raw = _scaleDAC(AO02, tempAO02_Scaled);
+    if (new_ao02_raw != tempAO02_Raw) {
+      tempAO02_Raw = new_ao02_raw;
+      _dac.setDACOutVoltage(tempAO02_Raw, 1);
     }
-    int16_t new_ao02_scaled = AO02_Scaled;
-    if (AO02_Raw != _scaleDAC(AO02, AO02_Scaled)) {
-      new_ao02_scaled = _inverseScaleDAC(AO02, AO02_Raw);
-      AO02_Scaled = new_ao02_scaled;
-      _dac.setDACOutVoltage(AO02_Raw, 1);
+    int16_t new_ao02_scaled = tempAO02_Scaled;
+    if (tempAO02_Raw != _scaleDAC(AO02, tempAO02_Scaled)) {
+      new_ao02_scaled = _inverseScaleDAC(AO02, tempAO02_Raw);
+      tempAO02_Scaled = new_ao02_scaled;
+      _dac.setDACOutVoltage(tempAO02_Raw, 1);
     }
   }
 
@@ -418,7 +498,7 @@ void ESP32Modbee::update() {
   static int16_t lastCalZeroOffsetADC[4], lastCalLowADC[4], lastCalHighADC[4];
   static int16_t lastCalZeroOffsetDAC[2], lastCalLowDAC[2], lastCalHighDAC[2];
   static unsigned long lastSave = 0;
-  if (_mode == MB_SLAVE && millis() - lastSave >= 1000) {
+  if ((_mode == MB_SLAVE || _mode == MB_REMOTE_IO) && millis() - lastSave >= 1000) {
     bool changed = false;
 
     // ADC Calibration

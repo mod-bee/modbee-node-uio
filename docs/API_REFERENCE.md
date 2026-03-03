@@ -11,12 +11,10 @@ Start with this complete working code that exercises all features:
 #include <ModbeeWebServer.h>
 
 // Create the I/O controller
-// Parameters: mode, ledPin, SDA, SCL, mbusRx, mbusTx, mbusID, 
-//            modBeeRx, modBeeTx, modBeeID, baud1, config1, &Serial1, 
-//            baud2, config2, &Serial2
-ESP32Modbee io(MB_NONE, 39, 37, 38, 18, 17, 1, 16, 15, 5,
-               115200, SERIAL_8N1, &Serial1,
-               115200, SERIAL_8N1, &Serial2);
+// Parameters: mode, mbusRx, mbusTx, mbusID, modBeeRx, modBeeTx, modBeeID, baud1, config1, baud2, config2
+ESP32Modbee io(MB_NONE, 18, 17, 1, 16, 15, 5,
+               115200, SERIAL_8N1,
+               115200, SERIAL_8N1);
 
 ModbeeWebServer webServer(io, 80);
 
@@ -220,9 +218,9 @@ void loop() {
 
 ```cpp
 // In global scope
-ESP32Modbee io(MB_SLAVE, 39, 37, 38, 18, 17, 1, 16, 15, 5,
-               115200, SERIAL_8N1, &Serial1,
-               115200, SERIAL_8N1, &Serial2);
+ESP32Modbee io(MB_SLAVE, 18, 17, 1, 16, 15, 5,
+               115200, SERIAL_8N1,
+               115200, SERIAL_8N1);
 
 void loop() {
   io.update();  // Process incoming Modbus requests automatically
@@ -233,18 +231,18 @@ void loop() {
 ```
 
 **Modbus register map:**
-- **Coils (write)**: 0-7 → DO01-DO08
-- **Input Status (read)**: 0-7 → DI01-DI08
-- **Input Registers (read)**: 0-3 → AI01-AI04 scaled, 4-7 → AI01-AI04 raw
-- **Holding Registers (read/write)**: 0-1 → AO01-AO02 scaled, 2-3 → AO01-AO02 raw
+- **Coils (write)**: 100-107 → DO01-DO08
+- **Input Status (read)**: 100-107 → DI01-DI08
+- **Input Registers (read)**: 100-103 → AI01-AI04 scaled, 104-107 → AI01-AI04 raw
+- **Holding Registers (read/write)**: 100-101 → AO01-AO02 scaled, 102-103 → AO01-AO02 raw
 
 ### Modbus Master (Poll Slaves)
 
 ```cpp
 // In global scope
-ESP32Modbee io(MB_MASTER, 39, 37, 38, 18, 17, 1, 16, 15, 5,
-               115200, SERIAL_8N1, &Serial1,
-               115200, SERIAL_8N1, &Serial2);
+ESP32Modbee io(MB_MASTER, 18, 17, 1, 16, 15, 5,
+               115200, SERIAL_8N1,
+               115200, SERIAL_8N1);
 
 #define NUM_SLAVES 2
 struct SlaveData {
@@ -360,21 +358,16 @@ Main class for controlling all I/O on the device.
 ```cpp
 ESP32Modbee(
   uint8_t mode,                        // MB_MASTER, MB_SLAVE, or MB_NONE
-  uint8_t ledPin = 39,                 // Status LED pin
-  uint8_t sdaPin = 37,                 // I2C SDA (ADC/DAC)
-  uint8_t sclPin = 38,                 // I2C SCL
-  uint8_t modbusRxPin = 18,            // UART1 RX (Modbus)
-  uint8_t modbusTxPin = 17,            // UART1 TX
-  uint8_t modbusId = 1,                // Modbus node ID
-  uint8_t modbeeRxPin = 16,            // UART2 RX (ModBee)
-  uint8_t modbeeTxPin = 15,            // UART2 TX
-  uint8_t modbeeId = 1,                // ModBee node ID
-  uint32_t baudrate1 = 115200,         // Modbus baud rate
-  uint32_t serialConfig1 = SERIAL_8N1, // Modbus serial config
-  HardwareSerial* serialPort1 = &Serial1,
-  uint32_t baudrate2 = 115200,         // ModBee baud rate
-  uint32_t serialConfig2 = SERIAL_8N1, // ModBee serial config
-  HardwareSerial* serialPort2 = &Serial2
+  uint8_t modbusRxPin,                 // UART1 RX (Modbus)
+  uint8_t modbusTxPin,                 // UART1 TX
+  uint8_t modbusId,                    // Modbus node ID
+  uint8_t modbeeRxPin,                 // UART2 RX (ModBee)
+  uint8_t modbeeTxPin,                 // UART2 TX
+  uint8_t modbeeId,                    // ModBee node ID
+  uint32_t baudrate1,                  // Modbus baud rate
+  uint32_t serialConfig1,              // Modbus serial config
+  uint32_t baudrate2,                  // ModBee baud rate
+  uint32_t serialConfig2               // ModBee serial config
 );
 ```
 
@@ -830,14 +823,14 @@ void loop() {
 
 | Register Type | Address | Channel | Access | Description |
 |---|---|---|---|---|
-| Coil | 0-7 | DO01-DO08 | Write | Digital outputs |
-| Input Status | 0-7 | DI01-DI08 | Read | Digital inputs |
-| Input Register | 0-3 | AI01-AI04 (Scaled) | Read | Analog inputs (scaled) |
-| Input Register | 4-7 | AI01-AI04 (Raw) | Read | Analog inputs (raw) |
-| Holding Register | 0-1 | AO01-AO02 (Scaled) | Read/Write | Analog outputs (scaled) |
-| Holding Register | 2-3 | AO01-AO02 (Raw) | Read/Write | Analog outputs (raw) |
-| Holding Register | 4-13 | Calibration | Read/Write | ADC calibration data |
-| Holding Register | 14-21 | Calibration | Read/Write | DAC calibration data |
+| Coil | 100-107 | DO01-DO08 | Write | Digital outputs |
+| Input Status | 100-107 | DI01-DI08 | Read | Digital inputs |
+| Input Register | 100-103 | AI01-AI04 (Scaled) | Read | Analog inputs (scaled) |
+| Input Register | 104-107 | AI01-AI04 (Raw) | Read | Analog inputs (raw) |
+| Holding Register | 100-101 | AO01-AO02 (Scaled) | Read/Write | Analog outputs (scaled) |
+| Holding Register | 102-103 | AO01-AO02 (Raw) | Read/Write | Analog outputs (raw) |
+| Holding Register | 104-113 | Calibration | Read/Write | ADC calibration data |
+| Holding Register | 114-121 | Calibration | Read/Write | DAC calibration data |
 
 ### Master Read Operations
 
@@ -854,7 +847,7 @@ if (io.mb.readIsts(slaveId, 0, inputs, 8)) {
 | Parameter | Type | Description |
 |---|---|---|
 | slaveId | uint8_t | Modbus slave ID (1-247) |
-| 0 | uint16_t | Starting address (0-7 for DI) |
+| 100 | uint16_t | Starting address (100-107 for DI) |
 | inputs | bool* | Array to store results |
 | 8 | uint16_t | Number of coils to read |
 | **return** | bool | true if successful |
@@ -872,7 +865,7 @@ if (io.mb.readIreg(slaveId, 0, values, 4)) {
 | Parameter | Type | Description |
 |---|---|---|
 | slaveId | uint8_t | Modbus slave ID |
-| 0 | uint16_t | Starting address (0-7) |
+| 100 | uint16_t | Starting address (100-107) |
 | values | uint16_t* | Array to store results |
 | 4 | uint16_t | Number of registers to read |
 | **return** | bool | true if successful |

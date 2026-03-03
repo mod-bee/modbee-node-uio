@@ -99,6 +99,13 @@ uint16_t ModBeeFrame::buildDataFrame(
         // Add slave ID
         buffer[pos++] = op.destNodeID;
         
+        // Reserve 2 bytes for the section's Modbus data length field.
+        // Length-prefixed sections allow payload bytes equal to
+        // MODBEE_PACKET_DELIM (0x7C = 124) without being misidentified
+        // as section delimiters by the receiver's scanner.
+        uint16_t lenFieldPos = pos;
+        pos += 2; // [len_H][len_L] filled in after building Modbus data
+        
         // Build Modbus section
         uint16_t modbusLen = 0;
         if (op.req.isResponse) {
@@ -113,6 +120,10 @@ uint16_t ModBeeFrame::buildDataFrame(
             pos = posBeforeSection; // Rollback this section
             break;
         }
+        
+        // Write actual length into the reserved field
+        buffer[lenFieldPos]     = (modbusLen >> 8) & 0xFF;
+        buffer[lenFieldPos + 1] = modbusLen & 0xFF;
         
         pos += modbusLen;
         
@@ -243,37 +254,42 @@ int ModBeeFrame::findModbusSections(
     uint16_t dataEnd = length - 2; // Exclude CRC
     
     while (pos < dataEnd) {
-        // Look for section delimiter
-        if (buffer[pos] == MODBEE_PACKET_DELIM) {
-            pos++; // Skip delimiter
-            
-            if (pos >= dataEnd) {
-                break; // No more data after delimiter
-            }
-            
-            // Next byte should be destination node ID
-            uint16_t sectionStart = pos;
-            
-            // Find end of this section (next delimiter or end of data)
-            uint16_t sectionEnd = dataEnd;
-            for (uint16_t i = pos + 1; i < dataEnd; i++) {
-                if (buffer[i] == MODBEE_PACKET_DELIM) {
-                    sectionEnd = i;
-                    break;
-                }
-            }
-            
-            // Add section if it has meaningful data (minimum 3 bytes: nodeID + FC + data)
-            if (sectionEnd > sectionStart + 2) {
-                sections.push_back(std::make_pair(sectionStart, sectionEnd));
-                MBEE_DEBUG_IO("SECTION: Found section from %d to %d (length %d)", 
-                    sectionStart, sectionEnd, sectionEnd - sectionStart);
-            }
-            
-            pos = sectionEnd;
-        } else {
+        if (buffer[pos] != MODBEE_PACKET_DELIM) {
             pos++;
+            continue;
         }
+        
+        pos++; // Skip delimiter byte
+        
+        // Need at least: destNodeID(1) + len_H(1) + len_L(1) = 3 bytes
+        if (pos + 3 > dataEnd) {
+            break;
+        }
+        
+        uint16_t sectionStart = pos; // Points to destNodeID byte
+        
+        // Read the 2-byte length field that follows destNodeID.
+        // Using length-based sections instead of scanning for the next
+        // MODBEE_PACKET_DELIM means payload bytes equal to 0x7C are
+        // never misidentified as section boundaries.
+        uint16_t modbusDataLen = ((uint16_t)buffer[pos + 1] << 8) | buffer[pos + 2];
+        
+        // sectionEnd covers: destNodeID(1) + len_H(1) + len_L(1) + modbus data
+        uint16_t sectionEnd = sectionStart + 1 + 2 + modbusDataLen;
+        
+        // Clamp to frame bounds for safety
+        if (sectionEnd > dataEnd) {
+            sectionEnd = dataEnd;
+        }
+        
+        // Accept section if it has at least destNodeID + length field + 1 data byte
+        if (sectionEnd > sectionStart + 3) {
+            sections.push_back(std::make_pair(sectionStart, sectionEnd));
+            MBEE_DEBUG_IO("SECTION: Found section from %d to %d (length %d)",
+                sectionStart, sectionEnd, sectionEnd - sectionStart);
+        }
+        
+        pos = sectionEnd;
     }
     
     return sections.size();

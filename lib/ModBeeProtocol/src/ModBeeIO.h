@@ -77,6 +77,10 @@ public:
 private:
     ModBeeProtocol& _protocol;
     Stream* _stream;
+
+    // Microsecond-resolution activity timestamp for accurate inter-frame timing.
+    // Keep the millisecond timestamp above for protocol-level "age" decisions.
+    uint32_t _lastBusActivityMicros;
     
     // =============================================================================
     // DOUBLE BUFFER SYSTEM FOR SAFE FRAME PROCESSING

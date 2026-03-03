@@ -139,6 +139,7 @@ struct ModbusRequest {
  * Pending operation structure for queue management
  */
 struct PendingModbusOp {
+    uint32_t operationId;               // Unique operation identifier
     uint8_t destNodeID;                 // Target node ID
     uint8_t sourceNodeID;               // Source node ID
     ModbusRequest req;                  // Request data
@@ -147,7 +148,7 @@ struct PendingModbusOp {
     void* resultPtr;                    // Result pointer for direct access
     bool isArray;                       // Array operation flag
     uint16_t arraySize;                 // Array size if applicable
-    std::function<void()> onComplete;   // Completion callback
+    std::function<void(uint32_t)> onComplete; // Completion callback with operation ID
 };
 
 /**
@@ -234,6 +235,9 @@ typedef std::function<bool(uint16_t address, int16_t value)> HregCallback;
 
 // Error handler function type
 typedef void (*ModBeeErrorHandler)(ModBeeError error, const char* msg);
+
+// Completion callback type for async operations - follows Modbus pattern
+typedef std::function<void(uint32_t operationId)> ModBeeCompletionCallback;
 
 /**
  * Packet structure for callback handlers

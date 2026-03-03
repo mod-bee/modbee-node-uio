@@ -9,6 +9,7 @@ ModBeeIO::ModBeeIO(ModBeeProtocol& protocol)
       _primaryRxPos(0),
       _processingBufferLen(0),
       _lastBusActivity(0),
+    _lastBusActivityMicros(0),
       _rxAvailable(false) {
     
     // Initialize frame queue
@@ -34,6 +35,7 @@ bool ModBeeIO::begin(Stream* serialStream) {
     _primaryRxPos = 0;
     _processingBufferLen = 0;
     _lastBusActivity = 0;
+    _lastBusActivityMicros = 0;
     _rxAvailable = false;
     
     // Clear frame queue
@@ -61,14 +63,22 @@ void ModBeeIO::processIncoming() {
         
         uint8_t byte = (uint8_t)incomingByte;
         
-        // SOF detection - always restart frame
-        if (byte == MODBEE_SOF) {
-            _primaryRxPos = 0;  // Reset to start new frame
-            //MBEE_DEBUG_IO("RX: SOF detected, starting new frame");
+        // SOF detection - only restart the frame buffer if we have NOT yet
+        // accumulated enough bytes to be mid-frame.  If we already have
+        // MODBEE_MIN_FRAME_LEN or more bytes buffered, this 0x7E is almost
+        // certainly a payload data byte inside an in-progress data frame
+        // (register value 126, 0x7E00, 0x7Exx …).  Resetting here would
+        // silently discard a valid frame, the sender would never receive
+        // _tokenConfirmed, retry-exhaust, and remove the node from the ring.
+        // We rely on CRC validation in findNextCompleteFrame to identify the
+        // true frame boundaries regardless of payload content.
+        if (byte == MODBEE_SOF && _primaryRxPos < MODBEE_MIN_FRAME_LEN) {
+            _primaryRxPos = 0;
         }
         
         _primaryRxBuffer[_primaryRxPos++] = byte;
         _lastBusActivity = millis();
+        _lastBusActivityMicros = micros();
         dataReceived = true;
     }
     
@@ -113,6 +123,17 @@ void ModBeeIO::extractCompleteFrames() {
             shiftPrimaryBuffer(frameEnd);
             searchPos = 0; // Start over after shift
         } else {
+            // No complete frame found.  If the buffer is nearly full and
+            // no valid CRC frame can be assembled from it, flush bytes up to
+            // the next SOF so the receiver doesn't stall permanently on
+            // garbage / partial frames left by noise or collisions.
+            if (_primaryRxPos >= (MODBEE_MAX_RX_BUFFER * 3 / 4)) {
+                uint16_t skip = 1;
+                while (skip < _primaryRxPos && _primaryRxBuffer[skip] != MODBEE_SOF) {
+                    skip++;
+                }
+                shiftPrimaryBuffer(skip);
+            }
             break; // No more complete frames
         }
     }
@@ -122,26 +143,40 @@ void ModBeeIO::extractCompleteFrames() {
 // FIND NEXT COMPLETE FRAME IN PRIMARY BUFFER
 // =============================================================================
 bool ModBeeIO::findNextCompleteFrame(uint16_t& frameStart, uint16_t& frameEnd) {
-    // Find SOF marker
-    frameStart = 0;
-    while (frameStart < _primaryRxPos && _primaryRxBuffer[frameStart] != MODBEE_SOF) {
-        frameStart++;
-    }
-    
-    if (frameStart >= _primaryRxPos) {
-        return false; // No SOF found
-    }
-    
-    // Look for complete frame starting at frameStart
-    for (uint16_t testEnd = frameStart + MODBEE_MIN_FRAME_LEN; testEnd <= _primaryRxPos; testEnd++) {
-        // Test if we have a complete frame from frameStart to testEnd
-        if (ModBeeFrame::isValidFrame(&_primaryRxBuffer[frameStart], testEnd - frameStart)) {
-            frameEnd = testEnd;
-            return true;
+    // Scan through all SOF positions in the buffer until we find one that
+    // produces a CRC-valid frame.  Trying multiple SOF positions is essential
+    // because:
+    //  a) Genuine noise / partial frames can leave a stale SOF in the buffer
+    //     in front of a valid frame.
+    //  b) Payload data bytes can equal MODBEE_SOF (0x7E) — with the mid-frame
+    //     reset guard in processIncoming these bytes now stay in the buffer,
+    //     so we must skip past them if they don't lead to a valid CRC match.
+    uint16_t searchFrom = 0;
+
+    while (searchFrom < _primaryRxPos) {
+        // Find the next SOF marker from searchFrom
+        frameStart = searchFrom;
+        while (frameStart < _primaryRxPos && _primaryRxBuffer[frameStart] != MODBEE_SOF) {
+            frameStart++;
         }
+
+        if (frameStart >= _primaryRxPos) {
+            return false; // No more SOF markers in buffer
+        }
+
+        // Try all lengths from this SOF position
+        for (uint16_t testEnd = frameStart + MODBEE_MIN_FRAME_LEN; testEnd <= _primaryRxPos; testEnd++) {
+            if (ModBeeFrame::isValidFrame(&_primaryRxBuffer[frameStart], testEnd - frameStart)) {
+                frameEnd = testEnd;
+                return true;
+            }
+        }
+
+        // No valid frame starting at this SOF; advance past it and try the next one
+        searchFrom = frameStart + 1;
     }
-    
-    return false; // Frame not complete yet
+
+    return false; // No complete valid frame found
 }
 
 // =============================================================================
@@ -202,6 +237,9 @@ void ModBeeIO::processCompleteFrame() {
         _protocol.reportError(MBEE_FRAME_ERROR, "Header parsing failed");
         return;
     }
+
+    // Inform protocol of control traffic for state-machine safety decisions.
+    _protocol.noteControlFrameRx(srcNodeID, nextMasterID, addNodeID, removeNodeID);
     
     // Update node seen
     _protocol.updateNodeSeen(srcNodeID);
@@ -250,11 +288,13 @@ void ModBeeIO::handleControlFrame(uint8_t srcNodeID, uint8_t nextMasterID, uint8
     // Check if token is being passed to us
     if (nextMasterID == _protocol.getNodeID()) {
         //MBEE_DEBUG_PROTOCOL("TOKEN: Received from Node %d (state: %s)", srcNodeID, _protocol.getStateName(_protocol.getState()));
-        _protocol.handleTokenReceived(srcNodeID);
+        // Pass isDirected=true: the sender explicitly targeted us, so they are
+        // a confirmed ring member regardless of our current state.
+        _protocol.handleTokenReceived(srcNodeID, true);
         _protocol.setTokenReceivedForUs();
     } else if (nextMasterID != 0) {
         //MBEE_DEBUG_PROTOCOL("TOKEN: Passed from Node %d to Node %d", srcNodeID, nextMasterID);
-        _protocol.handleTokenReceived(srcNodeID);
+        _protocol.handleTokenReceived(srcNodeID, false);
     }
     
     // Handle Node Adds - ONLY if it's a real join response (not invitation)
@@ -295,12 +335,24 @@ void ModBeeIO::processModbusSection(const uint8_t* buffer, uint16_t start, uint1
     
     uint16_t pos = start;
     
-    // Skip SlaveID byte - it's NOT part of Modbus frame!
+    // First byte: destination (slave) node ID
     uint8_t targetSlaveID = buffer[pos];
-    pos++; // Move past the SlaveID byte
+    pos++;
     
-    //MBEE_DEBUG_IO("MODBUS: Processing section SlaveID:%d, Modbus data starts at pos %d, len:%d, srcNodeID:%d", 
-    //    targetSlaveID, pos, end - pos, srcNodeID);
+    // Next 2 bytes: Modbus data length (length-prefixed section format).
+    // This guards against payload bytes equal to MODBEE_PACKET_DELIM (0x7C)
+    // being misidentified as section delimiters by the scanner.
+    if (pos + 2 > end) {
+        return; // Not enough bytes for length field
+    }
+    uint16_t declaredLen = ((uint16_t)buffer[pos] << 8) | buffer[pos + 1];
+    pos += 2;
+    
+    // Clamp to the actual section bounds for safety
+    uint16_t modbusEnd = pos + declaredLen;
+    if (modbusEnd > end) {
+        modbusEnd = end;
+    }
     
     // Only process if this section is meant for us
     if (targetSlaveID != _protocol.getNodeID()) {
@@ -308,7 +360,7 @@ void ModBeeIO::processModbusSection(const uint8_t* buffer, uint16_t start, uint1
         return;
     }
     
-    uint16_t modbusLen = end - pos;
+    uint16_t modbusLen = modbusEnd - pos;
     if (modbusLen < 2) {
         MBEE_DEBUG_IO("MODBUS: Frame too short (%d bytes)", modbusLen);
         return;
@@ -455,6 +507,10 @@ bool ModBeeIO::sendTokenFrame(uint8_t srcNodeID, uint8_t nextMasterID, uint8_t a
 }
 
 bool ModBeeIO::sendConnectionFrame(uint8_t srcNodeID, uint8_t addNodeID) {
+    if (!isTransmissionReady()) {
+        return false;
+    }
+
     uint8_t buffer[MODBEE_MAX_TX_BUFFER];
     
     uint16_t frameLen = ModBeeFrame::buildControlFrame(
@@ -477,6 +533,10 @@ bool ModBeeIO::sendConnectionFrame(uint8_t srcNodeID, uint8_t addNodeID) {
 }
 
 bool ModBeeIO::sendDisconnectionFrame(uint8_t srcNodeID, uint8_t removeNodeID) {
+    if (!isTransmissionReady()) {
+        return false;
+    }
+
     uint8_t buffer[MODBEE_MAX_TX_BUFFER];
     
     uint16_t frameLen = ModBeeFrame::buildControlFrame(
@@ -499,6 +559,10 @@ bool ModBeeIO::sendDisconnectionFrame(uint8_t srcNodeID, uint8_t removeNodeID) {
 }
 
 bool ModBeeIO::sendJoinInvitationFrame(uint8_t srcNodeID, uint8_t invitedNodeID) {
+    if (!isTransmissionReady()) {
+        return false;
+    }
+
     uint8_t buffer[MODBEE_MAX_TX_BUFFER];
     
     uint16_t frameLen = ModBeeFrame::buildControlFrame(
@@ -520,6 +584,10 @@ bool ModBeeIO::sendJoinInvitationFrame(uint8_t srcNodeID, uint8_t invitedNodeID)
 }
 
 bool ModBeeIO::sendJoinResponseFrame(uint8_t srcNodeID) {
+    if (!isTransmissionReady()) {
+        return false;
+    }
+
     uint8_t buffer[MODBEE_MAX_TX_BUFFER];
     
     uint16_t frameLen = ModBeeFrame::buildControlFrame(
@@ -564,7 +632,10 @@ bool ModBeeIO::sendDataFrame(uint8_t nextMasterID, uint8_t addNodeID, uint8_t re
         pendingResponsesCopy.reserve(pendingResponses.size());
         
         for (const auto& op : pendingOps) {
-            pendingOpsCopy.push_back(op);
+            // Only send operations when they're ready (first attempt or retry delay elapsed)
+            if (_protocol.getOperations().isOperationReady(op)) {
+                pendingOpsCopy.push_back(op);
+            }
         }
         
         for (const auto& resp : pendingResponses) {
@@ -621,6 +692,14 @@ bool ModBeeIO::sendDataFrame(uint8_t nextMasterID, uint8_t addNodeID, uint8_t re
         buffer[pos++] = MODBEE_PACKET_DELIM;
         buffer[pos++] = op.destNodeID;
         
+        // Reserve 2 bytes for the section length field.  The actual length is
+        // filled in after building the Modbus data.  This makes section
+        // boundaries length-based rather than delimiter-scanned, so payload
+        // data bytes that happen to equal MODBEE_PACKET_DELIM (0x7C = 124)
+        // are never misidentified as section starts.
+        uint16_t lenFieldPos = pos;
+        pos += 2; // Reserve for [len_H][len_L]
+        
         uint16_t modbusLen = 0;
         if (op.req.isResponse) {
             modbusLen = ModbusFrame::buildModbusResponse(&buffer[pos], op.req);
@@ -632,6 +711,10 @@ bool ModBeeIO::sendDataFrame(uint8_t nextMasterID, uint8_t addNodeID, uint8_t re
             pos = posBeforeSection;
             break;
         }
+        
+        // Write actual Modbus data length into the reserved field
+        buffer[lenFieldPos]     = (modbusLen >> 8) & 0xFF;
+        buffer[lenFieldPos + 1] = modbusLen & 0xFF;
         
         pos += modbusLen;
         operationsAdded++;
@@ -665,9 +748,47 @@ bool ModBeeIO::sendDataFrame(uint8_t nextMasterID, uint8_t addNodeID, uint8_t re
     
     if (sent) {
         //MBEE_DEBUG_IO("DATA FRAME: Sent with %d operations to Node %d", operationsAdded, nextMasterID);
-        
-        for (const auto& op : pendingOpsCopy) {
-            _protocol.getOperations().removePendingOperation(op);
+
+        // Mark sent operations as in-flight, but only remove writes (writes have no response).
+        // Reads must remain pending so incoming responses can be matched and written to resultPtr.
+        const unsigned long now = millis();
+        std::vector<uint32_t> writeOpsToRemove;
+        writeOpsToRemove.reserve(pendingOpsCopy.size());
+
+        auto& pendingOps = _protocol.getOperations().getPendingOps();
+        for (const auto& sentOp : pendingOpsCopy) {
+            for (auto& liveOp : pendingOps) {
+                if (liveOp.operationId != sentOp.operationId) {
+                    continue;
+                }
+
+                // Update send timestamp for timeout/retry tracking
+                liveOp.timestamp = now;
+
+                // Prevent re-sending every token pass for the initial attempt
+                if (liveOp.retryCount == 0) {
+                    liveOp.retryCount = 1;
+                }
+
+                if (ModbusFrame::isWriteFunction(liveOp.req.function)) {
+                    if (liveOp.onComplete) {
+                        liveOp.onComplete(liveOp.operationId);
+                    }
+                    writeOpsToRemove.push_back(liveOp.operationId);
+                }
+                break;
+            }
+        }
+
+        if (!writeOpsToRemove.empty()) {
+            pendingOps.erase(
+                std::remove_if(
+                    pendingOps.begin(),
+                    pendingOps.end(),
+                    [&writeOpsToRemove](const PendingModbusOp& op) {
+                        return std::find(writeOpsToRemove.begin(), writeOpsToRemove.end(), op.operationId) != writeOpsToRemove.end();
+                    }),
+                pendingOps.end());
         }
         
         for (const auto& resp : pendingResponsesCopy) {
@@ -707,6 +828,9 @@ bool ModBeeIO::sendFrame(const uint8_t* buffer, uint16_t length) {
     size_t bytesWritten = _stream->write(buffer, length);
     
     if (bytesWritten == length) {
+        // Treat TX as bus activity so subsequent transmissions obey inter-frame gap.
+        _lastBusActivity = millis();
+        _lastBusActivityMicros = micros();
         incrementFrameSent();
         MBEE_DEBUG_FRAME(MBEE_FRAME_TX, buffer, length);
         return true;
@@ -724,9 +848,8 @@ bool ModBeeIO::isTransmissionReady() {
         return false;
     }
     
-    unsigned long now = micros();  // Use microseconds for precision
-    unsigned long lastActivityMicros = _lastBusActivity * 1000;  // Convert to micros
-    return (now - lastActivityMicros >= ModBeeAPI::MODBEE_INTERFRAME_GAP_US);
+    const uint32_t now = (uint32_t)micros();
+    return (uint32_t)(now - _lastBusActivityMicros) >= (uint32_t)ModBeeAPI::MODBEE_INTERFRAME_GAP_US;
 }
 
 // =============================================================================

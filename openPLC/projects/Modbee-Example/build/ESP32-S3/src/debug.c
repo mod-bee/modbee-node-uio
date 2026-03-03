@@ -21,13 +21,19 @@
 
 #include <stdbool.h>
 
+// Include defines.h first for Arduino builds to set USE_*_BLOCKS macros
+// before iec_std_FB.h processes its conditional includes
+#ifdef ARDUINO
+#include "../examples/Baremetal/defines.h"
+#endif
+
 #include "iec_types_all.h"
 #include "POUS.h"
 
 #define SAME_ENDIANNESS      0
 #define REVERSE_ENDIANNESS   1
 
-char plc_program_md5[] = "d8a3ed0622838c8b1228f280e6da8cc4";
+char plc_program_md5[] = "f29f612bb8ce06a35209570164ee027b";
 
 uint8_t endianness;
 
@@ -39,40 +45,40 @@ static const struct {
     void *ptr;
     __IEC_types_enum type;
 } debug_vars[] = {
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.EN), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.ENO), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX01), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX02), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX03), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX04), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX05), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX06), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX07), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.DX08), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX01_SCALED), REAL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX02_SCALED), REAL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX03_SCALED), REAL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.AX04_SCALED), REAL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_INPUTS0.HASBEENINITIALIZED), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.EN), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.ENO), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY01), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY02), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY03), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY04), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY05), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY06), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY07), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.DY08), BOOL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.AY01_SCALED), REAL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.AY02_SCALED), REAL_ENUM},
-    {&(RES0__INSTANCE0.MODBEE_OUTPUTS0.HASBEENINITIALIZED), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.EN), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.ENO), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX01), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX02), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX03), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX04), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX05), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX06), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX07), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.DX08), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX01_SCALED), REAL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX02_SCALED), REAL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX03_SCALED), REAL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.AX04_SCALED), REAL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_INPUTS0.HASBEENINITIALIZED), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.EN), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.ENO), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY01), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY02), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY03), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY04), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY05), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY06), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY07), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.DY08), BOOL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.AY01_SCALED), REAL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.AY02_SCALED), REAL_ENUM},
+    {&(RES0__INSTANCE0.MODBEE_HW_OUTPUTS0.HASBEENINITIALIZED), BOOL_ENUM},
     {&(RES0__INSTANCE0.START), BOOL_ENUM},
     {&(RES0__INSTANCE0.STOP), BOOL_ENUM},
     {&(RES0__INSTANCE0.RUN), BOOL_ENUM},
-    {&(RES0__INSTANCE1.MODBEE_CONFIG0.EN), BOOL_ENUM},
-    {&(RES0__INSTANCE1.MODBEE_CONFIG0.ENO), BOOL_ENUM},
-    {&(RES0__INSTANCE1.MODBEE_CONFIG0.HASBEENINITIALIZED), BOOL_ENUM},
+    {&(RES0__INSTANCE1.MODBEE_HW_CONFIG0.EN), BOOL_ENUM},
+    {&(RES0__INSTANCE1.MODBEE_HW_CONFIG0.ENO), BOOL_ENUM},
+    {&(RES0__INSTANCE1.MODBEE_HW_CONFIG0.HASBEENINITIALIZED), BOOL_ENUM},
 };
 
 #define VAR_COUNT               34
@@ -89,10 +95,10 @@ size_t get_var_size(size_t idx)
         return 0;
     }
     switch (debug_vars[idx].type) {
-    case REAL_ENUM:
-        return sizeof(REAL);
     case BOOL_ENUM:
         return sizeof(BOOL);
+    case REAL_ENUM:
+        return sizeof(REAL);
     default:
         return 0;
     }
@@ -103,10 +109,10 @@ void *get_var_addr(size_t idx)
     void *ptr = debug_vars[idx].ptr;
 
     switch (debug_vars[idx].type) {
-    case REAL_ENUM:
-        return (void *)&((__IEC_REAL_t *) ptr)->value;
     case BOOL_ENUM:
         return (void *)&((__IEC_BOOL_t *) ptr)->value;
+    case REAL_ENUM:
+        return (void *)&((__IEC_REAL_t *) ptr)->value;
     default:
         return 0;
     }
@@ -119,15 +125,15 @@ void force_var(size_t idx, bool forced, void *val)
     if (forced) {
         size_t var_size = get_var_size(idx);
         switch (debug_vars[idx].type) {
-        case REAL_ENUM: {
-            memcpy(&((__IEC_REAL_t *) ptr)->value, val, var_size);
-            ((__IEC_REAL_t *) ptr)->flags |= __IEC_FORCE_FLAG;
-            break;
-        }
-    
         case BOOL_ENUM: {
             memcpy(&((__IEC_BOOL_t *) ptr)->value, val, var_size);
             ((__IEC_BOOL_t *) ptr)->flags |= __IEC_FORCE_FLAG;
+            break;
+        }
+    
+        case REAL_ENUM: {
+            memcpy(&((__IEC_REAL_t *) ptr)->value, val, var_size);
+            ((__IEC_REAL_t *) ptr)->flags |= __IEC_FORCE_FLAG;
             break;
         }
     
@@ -136,11 +142,11 @@ void force_var(size_t idx, bool forced, void *val)
         }
     } else {
         switch (debug_vars[idx].type) {
-        case REAL_ENUM:
-            ((__IEC_REAL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
-            break;
         case BOOL_ENUM:
             ((__IEC_BOOL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
+            break;
+        case REAL_ENUM:
+            ((__IEC_REAL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
             break;
         default:
             break;

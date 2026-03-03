@@ -261,35 +261,58 @@ These functions queue operations to be sent to other nodes. They are all **non-b
 #### **Single Value Operations**
 
 ---
-#### `bool writeHreg(uint8_t nodeID, uint16_t offset, int16_t value, ...)`
+#### `uint32_t writeHreg(uint8_t nodeID, uint16_t offset, int16_t value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr)`
 Queues a request to write a single 16-bit value to a Holding Register on a remote node.
 *   `nodeID`: The ID of the destination node.
 *   `offset`: The register address to write to on the remote node.
 *   `value`: The `int16_t` value to write.
-*   **Returns**: `true` if the operation was successfully added to the queue.
+*   `fc`: Optional Modbus function code (default: auto-selected)
+*   `callback`: Optional completion callback function
+*   **Returns**: Operation ID (`uint32_t`) - `0` on failure, `> 0` on success
 
 ```cpp
 // Tell Node 2 to set its Holding Register 50 to the value 999
-modbee.writeHreg(2, 50, 999);
+uint32_t opId = modbee.writeHreg(2, 50, 999);
+if (opId > 0) {
+    Serial.printf("Write operation queued: %u\n", opId);
+}
 ```
 
 ---
-#### `bool writeCoil(uint8_t nodeID, uint16_t offset, bool value, ...)`
+#### `uint32_t writeCoil(uint8_t nodeID, uint16_t offset, bool value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr)`
 Queues a request to write a single boolean value to a Coil on a remote node.
+*   `nodeID`: The ID of the destination node.
+*   `offset`: The register address to write to on the remote node.
+*   `value`: The boolean value to write.
+*   `fc`: Optional Modbus function code (default: auto-selected)
+*   `callback`: Optional completion callback function
+*   **Returns**: Operation ID (`uint32_t`) - `0` on failure, `> 0` on success
+
 ```cpp
 // Tell Node 2 to turn on its Coil 10
-modbee.writeCoil(2, 10, true);
+uint32_t opId = modbee.writeCoil(2, 10, true);
+if (opId > 0) {
+    Serial.printf("Coil write operation queued: %u\n", opId);
+}
 ```
 
 ---
-#### `bool readHreg(uint8_t nodeID, uint16_t offset, int16_t& value, ...)`
+#### `uint32_t readHreg(uint8_t nodeID, uint16_t offset, int16_t& value, uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr)`
 Queues a request to read a single Holding Register from a remote node. The result will be placed in the `value` variable automatically.
+*   `nodeID`: The ID of the destination node.
+*   `offset`: The register address to read from on the remote node.
 *   `value`: A reference to a local variable where the result will be stored.
+*   `fc`: Optional Modbus function code (default: auto-selected)
+*   `callback`: Optional completion callback function
+*   **Returns**: Operation ID (`uint32_t`) - `0` on failure, `> 0` on success
 
 ```cpp
 int16_t remoteSensorValue;
 // Request the value of Hreg 200 from Node 3
-modbee.readHreg(3, 200, remoteSensorValue);
+uint32_t opId = modbee.readHreg(3, 200, remoteSensorValue);
+if (opId > 0) {
+    Serial.printf("Read operation queued: %u\n", opId);
+}
 // Later, remoteSensorValue will be updated with the response
 ```
 
@@ -297,33 +320,144 @@ modbee.readHreg(3, 200, remoteSensorValue);
 #### **Array Operations (Auto-Sized)**
 
 ---
-#### `template<size_t N> bool writeHreg(uint8_t nodeID, uint16_t offset, const int16_t (&values)[N], ...)`
+#### `template<size_t N> uint32_t writeHreg(uint8_t nodeID, uint16_t offset, const int16_t (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr)`
 Queues a request to write an array of `int16_t` values to a remote node. The number of registers to write is determined automatically by the size of the array.
 *   `values`: A reference to a local array containing the data to write.
+*   `fc`: Optional Modbus function code (default: auto-selected)
+*   `callback`: Optional completion callback function
+*   **Returns**: Operation ID (`uint32_t`) - `0` on failure, `> 0` on success
 
 ```cpp
 int16_t configurationData[4] = {10, 20, 30, 40};
 // Write the 4 values to Node 2, starting at Hreg 1000
-modbee.writeHreg(2, 1000, configurationData);
+uint32_t opId = modbee.writeHreg(2, 1000, configurationData);
+if (opId > 0) {
+    Serial.printf("Write operation queued: %u\n", opId);
+}
 ```
 
 ---
-#### `template<size_t N> bool readHreg(uint8_t nodeID, uint16_t offset, int16_t (&values)[N], ...)`
+#### `template<size_t N> uint32_t readHreg(uint8_t nodeID, uint16_t offset, int16_t (&values)[N], uint8_t fc = 0, ModBeeCompletionCallback callback = nullptr)`
 Queues a request to read multiple Holding Registers from a remote node into a local array.
 *   `values`: A reference to a local array where the results will be stored.
+*   `fc`: Optional Modbus function code (default: auto-selected)
+*   `callback`: Optional completion callback function
+*   **Returns**: Operation ID (`uint32_t`) - `0` on failure, `> 0` on success
 
 ```cpp
 // Prepare an array to hold 4 sensor readings from Node 3
 int16_t remoteSensors[4];
 // Read 4 registers starting at address 300 from Node 3
-modbee.readHreg(3, 300, remoteSensors);
+uint32_t opId = modbee.readHreg(3, 300, remoteSensors);
+if (opId > 0) {
+    Serial.printf("Read operation queued: %u\n", opId);
+}
 // The remoteSensors array will be filled with data upon response
 ```
-*(Similar template functions exist for `readCoil`, `writeCoil`, `readIreg`, and `readIsts`.)*
+*(Similar functions exist for `readCoil`, `readIreg`, `readIsts`, `writeCoil`, and array variants with the same asynchronous behavior and callback support.)*
 
 ---
 
-## 5. Key Configuration Parameters
+## 5. Asynchronous Operations and Callbacks
+
+All read and write operations in ModBee are **asynchronous** and return immediately with an **operation ID** (`uint32_t`). This allows your sketch to continue executing while the protocol handles network communication in the background.
+
+### 5.1. Operation IDs and Return Values
+
+*   **Return Value**: All read/write functions return a `uint32_t` operation ID
+    *   `0` = Operation failed (invalid parameters, node not known, etc.)
+    *   `> 0` = Operation queued successfully, ID can be used for tracking
+*   **Local Operations**: When reading from the local node, operations complete immediately and return `0`
+*   **Remote Operations**: Network operations are queued and return a unique operation ID
+
+### 5.2. Completion Callbacks
+
+You can optionally provide a **completion callback** to be notified when an operation finishes:
+
+```cpp
+#include <ModBeeAPI.h>
+ModBeeAPI modbee;
+
+// Define a callback function
+void onReadComplete(uint32_t operationId) {
+    Serial.printf("Operation %u completed!\n", operationId);
+}
+
+void setup() {
+    modbee.begin(&Serial2, 1);
+    
+    // Read with callback
+    int16_t sensorData[4];
+    uint32_t opId = modbee.readHreg(3, 300, sensorData, 0, onReadComplete);
+    
+    if (opId > 0) {
+        Serial.printf("Read operation queued with ID: %u\n", opId);
+    }
+}
+```
+
+**Callback Function Signature:**
+```cpp
+typedef std::function<void(uint32_t operationId)> ModBeeCompletionCallback;
+```
+
+*   **Parameter**: `operationId` - The same ID returned when the operation was queued
+*   **Timing**: Called when the operation completes successfully OR fails
+*   **Thread Safety**: Callbacks execute in the main loop context, not interrupts
+
+### 5.3. Lambda Callbacks
+
+For simple operations, you can use lambda functions:
+
+```cpp
+// Lambda callback example
+uint32_t opId = modbee.readHreg(2, 100, sensorValue, 0, 
+    [](uint32_t id) {
+        Serial.printf("Sensor read %u finished\n", id);
+    }
+);
+```
+
+### 5.4. Operation Tracking
+
+You can monitor pending operations:
+
+```cpp
+// Get count of pending operations
+uint16_t pendingCount = modbee.getPendingOpCount();
+
+// Get statistics
+uint16_t pending, completed;
+modbee.getStatistics(pending, completed);
+
+// Clear all pending operations (use with caution)
+modbee.clearPendingOps();
+```
+
+### 5.5. Error Handling
+
+Operations can fail due to network issues, timeouts, or invalid parameters. Use the error handler to catch protocol-level errors:
+
+```cpp
+void onError(ModBeeError error, const char* message) {
+    Serial.printf("ModBee Error %d: %s\n", error, message);
+}
+
+void setup() {
+    modbee.onError(onError);
+    modbee.begin(&Serial2, 1);
+}
+```
+
+**Common Error Codes:**
+- `MBEE_TIMEOUT`: Operation timed out
+- `MBEE_CRC_ERROR`: Data corruption detected  
+- `MBEE_UNKNOWN_NODE`: Target node not in network
+- `MBEE_INVALID_ADDRESS`: Register address doesn't exist
+
+---
+
+## 6. Key Configuration Parameters
 
 The `ModBeeAPI` class exposes several `static` variables that allow you to fine-tune the protocol's behavior. You should set these **before** calling `modbee.begin()`. It is recommended to set them via your class instance.
 

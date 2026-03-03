@@ -6,12 +6,9 @@
 // Initialize ESP32Modbee for standalone use
 ESP32Modbee io(
   MB_NONE,            // Modbus Mode
-  LED_PIN,            // RGB LED
-  37, 38,             // SDA, SCL
   18, 17,             // Modbus RX, TX (unused)
   1,                  // Modbus ID (unused)
-  9600, SERIAL_8N1,   // Baudrate, serial config (unused)
-  &Serial1            // Serial port (unused)
+  9600, SERIAL_8N1    // Baudrate, serial config (unused)
 );
 
 unsigned long lastPrintTime = 0;

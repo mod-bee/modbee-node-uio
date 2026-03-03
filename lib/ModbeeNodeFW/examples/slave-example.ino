@@ -6,12 +6,9 @@
 // Initialize ESP32Modbee as slave
 ESP32Modbee io(
   MB_SLAVE,           // Modbus Mode
-  LED_PIN,            // RGB LED
-  37, 38,             // DA, SCL
   18, 17,             // Modbus RX, TX
   1,                  // Modbus ID
-  9600, SERIAL_8N1,   // Baudrate, serial config
-  &Serial1            // Serial port
+  9600, SERIAL_8N1    // Baudrate, serial config
 );
 
 unsigned long lastPrintTime = 0;

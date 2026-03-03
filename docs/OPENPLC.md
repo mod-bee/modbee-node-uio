@@ -13,6 +13,106 @@ ModBee Node-UIO integrates seamlessly with **openPLC**, an open-source industria
 - **ModBee Node-UIO device** with ESP32-S3
 - **USB C cable** for uploading firmware to the device
 
+## ⚠️ CRITICAL: Configure Function Blocks Before Use
+
+**You MUST customize the function blocks before compiling and uploading to your device!**
+
+### Step 1: Configure MODBEE_HW_CONFIG Block
+
+1. **Open MODBEE_HW_CONFIG.cpp** in OpenPLC Editor
+2. **Edit the ESP32Modbee constructor parameters** to match your hardware:
+
+```cpp
+ESP32Modbee io(
+  MBEE_REMOTE_IO,     // CHANGE THIS: mode - MB_NONE, MB_MASTER, MB_SLAVE, MB_REMOTE_IO, MBEE_REMOTE_IO
+  16, 15,             // CHANGE THESE: modbusRxPin, modbusTxPin (your hardware pins)
+  1,                  // CHANGE THIS: modbusId (1-247, unique on Modbus network)
+  18, 17,             // CHANGE THESE: modbeeRxPin, modbeeTxPin (your hardware pins)
+  1,                  // CHANGE THIS: modbeeId (1-254, unique on ModBee network)
+  115200, SERIAL_8N1, // CHANGE THESE: baudrate1, serialConfig1 (Modbus serial settings)
+  115200, SERIAL_8N1  // CHANGE THESE: baudrate2, serialConfig2 (ModBee serial settings)
+);
+```
+
+**Common Configurations:**
+- **MBEE_REMOTE_IO**: Full I/O + network node (most common) - allows ModBee protocol to control outputs
+- **MB_MASTER**: Modbus master only - can control other Modbus devices
+- **MB_SLAVE**: Modbus slave only - can be controlled by Modbus master
+- **MB_REMOTE_IO**: Remote I/O for Modbus - allows Modbus master to control this node's outputs
+- **MB_NONE**: No Modbus, ModBee only - cannot be controlled as remote I/O node
+
+### Operating Mode Details
+
+The mode parameter determines **who controls the node's outputs** and prevents conflicts:
+
+| Mode | Modbus | ModBee | Output Control | Use Case |
+|------|--------|--------|----------------|----------|
+| **MB_NONE** | ❌ Disabled | ✅ Optional | Local OpenPLC program | Standalone device |
+| **MB_SLAVE** | ✅ Slave mode | ✅ Optional | Modbus master | Industrial controller slave |
+| **MB_MASTER** | ✅ Master mode | ✅ Optional | Local OpenPLC program | Control other Modbus devices |
+| **MB_REMOTE_IO** | ✅ Remote I/O | ❌ Disabled | Modbus master | PLC remote I/O module |
+| **MBEE_REMOTE_IO** | ❌ Disabled | ✅ Required | ModBee network | Distributed I/O network |
+
+#### Output Control Priority System
+
+**Critical**: The ModBee Node-UIO implements a **priority system** to prevent multiple protocols from controlling outputs simultaneously:
+
+1. **Remote I/O modes** (`MB_REMOTE_IO`, `MBEE_REMOTE_IO`): Network protocols have **exclusive control** of outputs
+2. **Slave modes** (`MB_SLAVE`): Modbus master has control, local OpenPLC program can only read inputs
+3. **Local modes** (`MB_NONE`, `MB_MASTER`): Local OpenPLC program has full control
+
+**This prevents conflicts where:**
+- A Modbus master tries to control outputs while local OpenPLC code also writes to them
+- ModBee network and Modbus both try to control the same outputs
+- Multiple masters fight for control of the same device
+
+#### Mode Selection Guide
+
+| Application | Recommended Mode | Why |
+|-------------|------------------|-----|
+| Standalone sensor/logger | `MB_NONE` | Local control only, no network conflicts |
+| PLC controlled device | `MB_SLAVE` | Standard Modbus slave for industrial control |
+| Device controller/gateway | `MB_MASTER` | Controls other devices, local output control |
+| PLC remote I/O module | `MB_REMOTE_IO` | Modbus master controls outputs exclusively |
+| Distributed I/O network | `MBEE_REMOTE_IO` | ModBee network controls outputs exclusively |
+
+**Important Notes:**
+- **Remote I/O modes** prevent multiple protocols from controlling outputs simultaneously
+- **ModBee can run alongside Modbus** as long as they use different serial ports (except in remote I/O modes)
+- **Local I/O reading** is always available in all modes
+- **Network communication** works regardless of mode (MB_NONE disables Modbus only)
+
+### Step 2: Configure MODBEE_CONFIG Block (Optional but Recommended)
+
+1. **Open MODBEE_CONFIG.cpp** in OpenPLC Editor
+2. **Adjust network parameters** based on your network type:
+
+```cpp
+// For wired RS485 networks (default):
+io.mbee.MODBEE_MAX_NODES = 5;     // Number of nodes in your network
+io.mbee.BASE_TIMEOUT = 100;       // 100ms for 115200 baud
+
+// For wireless networks (LoRa, radio):
+io.mbee.MODBEE_MAX_NODES = 3;     // Fewer nodes for wireless
+io.mbee.BASE_TIMEOUT = 500;       // Longer timeout for wireless latency
+io.mbee.MODBEE_INTERFRAME_GAP_US = 10000; // 10ms gap for wireless
+
+// Enable fail-safe mode (recommended)
+io.mbee.enableFailSafe = true;
+```
+
+**Network Type Guidelines:**
+- **RS485 wired**: Default settings work well
+- **Wireless/LoRa**: Increase timeouts, reduce max nodes
+- **Large networks**: Increase MODBEE_MAX_NODES, may need slower baud rates
+
+### Step 3: Verify Your Changes
+
+- **Double-check pin assignments** match your hardware
+- **Ensure unique IDs** on your network (no duplicate node/modbus IDs)
+- **Test serial settings** match your devices
+- **Save and recompile** after making changes
+
 ## Installation
 
 ### Step 1: Install openPLC Editor v4
@@ -47,9 +147,15 @@ The ModBee Node-UIO provides pre-built function blocks for openPLC:
 **Location**: `openPLC/function-blocks/`
 
 Available function blocks:
-- **MODBEE_CONFIG** - Initialize ModBee communication and connection management
-- **MODBEE_INPUTS** - Read all digital (DX01-DX08) and analog (AX01_Scaled-AX04_Scaled) inputs
-- **MODBEE_OUTPUTS** - Write all digital (YX01-YX08) and analog (YX01_Scaled-YX02_Scaled) outputs
+- **MODBEE_HW_CONFIG** - Initialize hardware I/O system with ESP32Modbee
+- **MODBEE_HW_INPUTS** - Read all digital (DX01-DX08) and analog (AX01_Scaled-AX04_Scaled) inputs
+- **MODBEE_HW_OUTPUTS** - Write all digital (DY01-DY08) and analog (AY01_Scaled-AY02_Scaled) outputs
+- **MODBEE_READ** - Read any registers from ModBee network nodes (universal)
+- **MODBEE_WRITE** - Write any registers to ModBee network nodes (universal)
+- **MODBUS_READ** - Read any registers from Modbus slaves (universal)
+- **MODBUS_WRITE** - Write any registers to Modbus slaves (universal)
+- **MODBEE_ADD_REGISTER** - Register custom variables for ModBee network access
+- **MODBUS_ADD_REGISTER** - Register custom variables for Modbus slave access
 
 These function blocks are available in the Modbee-Example project and can be copied into your own projects. They are implemented as C/C++ function blocks that run synchronously with the PLC runtime.
 
@@ -79,36 +185,40 @@ The simplest way to get started is using the pre-configured test project.
    - Upload the generated firmware to ModBee Node-UIO via USB
 
 **What Modbee-Example contains**:
-- Pre-configured function blocks for ModBee I/O
-- Recommended organization for input/output handling
-- Ready-to-use logic structure
+- Pre-configured MODBEE_HW_CONFIG block for hardware initialization
+- MODBEE_HW_INPUTS and MODBEE_HW_OUTPUTS blocks for direct hardware I/O access
+- MODBEE_READ and MODBEE_WRITE blocks for network communication
+- Recommended task organization with proper execution order
+- Ready-to-use logic structure for hardware control
 
 ### Option 2: Add Function Blocks to Your Project
 
 If you have an existing openPLC project, you can add ModBee function blocks:
 
 1. **Copy function blocks** from the repository:
-   - Copy `MODBEE_CONFIG.cpp`, `MODBEE_INPUTS.cpp`, and `MODBEE_OUTPUTS.cpp` from `openPLC/function-blocks/`
+   - Copy all `MODBEE_*.cpp` files from `openPLC/function-blocks/`
    - Paste them into your project's **POUS** folder under **function-blocks**
 
 2. **Create two tasks in Resources**:
 
-   **Task 1: MODBEE_CONFIG (1ms cycle)**
+   **Task 1: MODBEE_HW_CONFIG (1ms cycle)**
    - In openPLC Editor: **Resources** → Create new task
    - Set **Period**: 1ms
-   - Assign **Program/Function Block**: MODBEE_CONFIG
-   - This handles initialization and communication
+   - Assign **Program/Function Block**: MODBEE_HW_CONFIG
+   - This initializes the hardware I/O system and network communication
 
    **Task 2: MAIN or your control program (20ms cycle)**
    - Create your application logic
-   - Add instances of MODBEE_INPUTS and MODBEE_OUTPUTS
-   - Call MODBEE_INPUTS at the beginning to read fresh data
-   - Call MODBEE_OUTPUTS at the end to write commands
-   - Set **Execution Order**: Run after MODBEE_CONFIG task
+   - Add instances of MODBEE_HW_INPUTS and MODBEE_HW_OUTPUTS for hardware I/O
+   - Add MODBEE_READ/MODBEE_WRITE blocks for network communication
+   - Call MODBEE_HW_INPUTS at the beginning to read fresh sensor data
+   - Set output variables and call MODBEE_HW_OUTPUTS at the end
+   - Set **Execution Order**: Run after MODBEE_HW_CONFIG task
 
 3. **Wire your logic**:
-   - Use outputs from MODBEE_INPUTS (DX01-DX08, AX01_Scaled-AX04_Scaled) in your control logic
-   - Set inputs to MODBEE_OUTPUTS (YX01-YX08, YX01_Scaled-YX02_Scaled) based on your logic
+   - Use outputs from MODBEE_HW_INPUTS (DX01-DX08, AX01_Scaled-AX04_Scaled) in your control logic
+   - Set inputs to MODBEE_HW_OUTPUTS (DY01-DY08, AY01_Scaled-AY02_Scaled) based on your logic
+   - Use MODBEE_READ/MODBEE_WRITE for communication with other network nodes
 
 ## Configuration Details
 
@@ -129,32 +239,60 @@ In openPLC Editor **Device and Configuration**:
 
 ### Function Block Details
 
-#### MODBEE_CONFIG
-- Initializes ModBee communication
-- Runs continuously in the 1ms dedicated task
-- Handles connection management and device communication
-- Can be customized for advanced functionality (see "Customizing Function Blocks" below)
+#### MODBEE_HW_CONFIG
+- Initializes the complete ESP32Modbee hardware I/O system
+- Runs continuously in a dedicated task (1ms cycle recommended)
+- Handles all hardware initialization, Modbus communication, and ModBee network management
+- Must be instantiated once per project and run before other MODBEE_HW_* blocks
 
-#### MODBEE_INPUTS
+#### MODBEE_HW_INPUTS
 - **Outputs**:
   - `DX01` - `DX08` (bool) - Digital inputs 1-8
   - `AX01_Scaled` - `AX04_Scaled` (real) - Analog inputs 1-4 (mV or mA)
 
-#### MODBEE_OUTPUTS
+#### MODBEE_HW_OUTPUTS
 - **Inputs**:
-  - `YX01` - `YX08` (bool) - Digital outputs 1-8
-  - `YX01_Scaled` - `YX02_Scaled` (real) - Analog outputs 1-2 (mV or mA)
+  - `DY01` - `DY08` (bool) - Digital outputs 1-8
+  - `AY01_Scaled` - `AY02_Scaled` (real) - Analog outputs 1-2 (mV or mA)
+
+#### MODBEE_READ
+- **Inputs**:
+  - `REQ_04` (bool) - Trigger read operation (rising edge)
+  - `NODE_ID_04` (byte) - Target ModBee node ID (1-254)
+  - `REG_TYPE_04` (byte) - Register type (0=COILS, 1=ISTS, 2=HREG, 3=IREG)
+  - `START_ADDR_04` (word) - Starting register address
+  - `LENGTH_04` (byte) - Number of registers to read (1-8)
+- **Outputs**:
+  - `DONE_04` (bool) - Operation completed successfully
+  - `ERROR_04` (bool) - Operation failed
+  - `NODE_ONLINE_04` (bool) - Target node is online
+  - `COIL_01_04` - `COIL_08_04` (bool) - Boolean register values
+  - `REG_01_04` - `REG_08_04` (int) - Integer register values
+
+#### MODBEE_WRITE
+- **Inputs**:
+  - `REQ_05` (bool) - Trigger write operation (rising edge)
+  - `NODE_ID_05` (byte) - Target ModBee node ID (1-254)
+  - `REG_TYPE_05` (byte) - Register type (0=COILS, 2=HREG)
+  - `START_ADDR_05` (word) - Starting register address
+  - `LENGTH_05` (byte) - Number of registers to write (1-8)
+  - `COIL_01_05` - `COIL_08_05` (bool) - Boolean values to write
+  - `REG_01_05` - `REG_08_05` (int) - Integer values to write
+- **Outputs**:
+  - `DONE_05` (bool) - Operation completed successfully
+  - `ERROR_05` (bool) - Operation failed
+  - `NODE_ONLINE_05` (bool) - Target node is online
 
 ### Data Range Reference
 
-| Channel | Type | Range | Unit |
-|---------|------|-------|------|
-| Digital Input 1-8 (DX01-DX08) | bool | 0-1 | - |
-| Analog Input 1-4 (AX01_Scaled-AX04_Scaled) | real | 0-10000 | mV (voltage mode) |
-| Analog Input 1-4 (AX01_Scaled-AX04_Scaled) | real | 0-20000 | µA (current mode) |
-| Digital Output 1-8 (YX01-YX08) | bool | 0-1 | - |
-| Analog Output 1-2 (YX01_Scaled-YX02_Scaled) | real | 0-10000 | mV (voltage mode) |
-| Analog Output 1-2 (YX01_Scaled-YX02_Scaled) | real | 0-20000 | µA (current mode) |
+| Channel | Type | Range | Unit | Variable Name |
+|---------|------|-------|------|---------------|
+| Digital Input 1-8 | bool | 0-1 | - | DX01-DX08 |
+| Analog Input 1-4 | real | 0-10000 | mV (voltage mode) | AX01_Scaled-AX04_Scaled |
+| Analog Input 1-4 | real | 0-20000 | µA (current mode) | AX01_Scaled-AX04_Scaled |
+| Digital Output 1-8 | bool | 0-1 | - | DY01-DY08 |
+| Analog Output 1-2 | real | 0-10000 | mV (voltage mode) | AY01_Scaled-AY02_Scaled |
+| Analog Output 1-2 | real | 0-20000 | µA (current mode) | AY01_Scaled-AY02_Scaled |
 
 ## Customizing Function Blocks
 
@@ -187,17 +325,30 @@ All ModBee Node-UIO C++ APIs are available within custom function blocks. Refere
 
 The task execution order is essential for reliable operation:
 
-1. **MODBEE_CONFIG Task (1ms period)**
-   - Runs continuously to maintain ModBee communication
+1. **MODBEE_HW_CONFIG Task (1ms period)**
+   - Runs continuously to maintain hardware I/O and network communication
    - Must complete before other tasks
 
 2. **Your Main Program Task (20ms typical)**
-   - Call MODBEE_INPUTS at the beginning to read fresh sensor data
-   - Execute your control logic  
-   - Set output variables (YX01-YX08, YX01_Scaled-YX02_Scaled)
-   - Call MODBEE_OUTPUTS at the end to write commands to device
+   - Call MODBEE_HW_INPUTS at the beginning to read fresh sensor data
+   - Execute your control logic using DX01-DX08 and AX01_Scaled-AX04_Scaled inputs
+   - Set output variables (DY01-DY08, AY01_Scaled-AY02_Scaled)
+   - Call MODBEE_HW_OUTPUTS at the end to write commands to hardware
+   - Use MODBEE_READ/MODBEE_WRITE blocks for network communication as needed
 
 ## Troubleshooting
+
+### Configuration Issues
+
+1. **"Nothing works at all":**
+   - **Did you configure MODBEE_HW_CONFIG.cpp?** This is the most critical step. Open the function block in OpenPLC Editor and edit the ESP32Modbee constructor parameters (pins, IDs, modes, baud rates) to match your hardware.
+   - Check that your pin assignments match your actual hardware connections
+   - Verify node IDs are unique on your network (no duplicates)
+
+2. **Network communication fails:**
+   - Check MODBEE_CONFIG.cpp settings match your network type (wired RS485 vs wireless)
+   - For wireless networks, increase BASE_TIMEOUT and reduce MODBEE_MAX_NODES
+   - Verify RS485 termination and bias resistors are properly installed
 
 ### Code Generation Issues
 
@@ -214,9 +365,9 @@ The task execution order is essential for reliable operation:
 
 ### Function Block Not Running
 
-- Verify MODBEE_CONFIG task is set to 1ms period
-- Check task execution order (MODBEE_CONFIG runs first)
-- Confirm MODBEE_INPUTS and MODBEE_OUTPUTS are instantiated in your main program
+- Verify MODBEE_HW_CONFIG task is set to 1ms period
+- Check task execution order (MODBEE_HW_CONFIG runs first)
+- Confirm MODBEE_HW_INPUTS and MODBEE_HW_OUTPUTS are instantiated in your main program
 - Verify all tasks have correct "Execution Order" priority in Resources
 
 ### No I/O Response

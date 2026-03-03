@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "name": "Modbee-MBee-Node4",
+    "type": "plc-project"
+  },
+  "data": {
+    "dataTypes": [],
+    "pous": [],
+    "configuration": {
+      "resource": {
+        "tasks": [
+          {
+            "name": "task0",
+            "triggering": "Cyclic",
+            "interval": "T#10ms",
+            "priority": 1
+          },
+          {
+            "name": "Task1",
+            "triggering": "Cyclic",
+            "interval": "T#1ms",
+            "priority": 0
+          }
+        ],
+        "instances": [
+          {
+            "name": "instance0",
+            "task": "task0",
+            "program": "main"
+          },
+          {
+            "name": "instance1",
+            "task": "Task1",
+            "program": "modbee"
+          }
+        ],
+        "globalVariables": []
+      }
+    },
+    "debugVariables": {
+      "pous": {
+        "main": [
+          "MBEE_AI01",
+          "MBEE_AI02",
+          "MBEE_AI03",
+          "MBEE_AI04"
+        ]
+      }
+    },
+    "deletedPous": [],
+    "deletedServers": [],
+    "deletedRemoteDevices": []
+  }
+}

@@ -76,16 +76,12 @@ Provides HTTP/WebSocket interface for:
 // Create instance with standalone mode (no Modbus)
 ESP32Modbee io(
   MB_NONE,              // mode: MB_MASTER, MB_SLAVE, or MB_NONE
-  LED_PIN,              // GPIO 39
-  37, 38,               // I2C pins (SDA, SCL) for ADC/DAC
   18, 17,               // Modbus UART (RX, TX)
   1,                    // Modbus node ID
   16, 15,               // ModBee UART (RX, TX)
   5,                    // ModBee node ID
   115200, SERIAL_8N1,   // Modbus: baud rate, serial config
-  &Serial1,             // Modbus serial port
-  115200, SERIAL_8N1,   // ModBee: baud rate, serial config
-  &Serial2              // ModBee serial port
+  115200, SERIAL_8N1    // ModBee: baud rate, serial config
 );
 
 // Optional: Create web server for control
@@ -141,66 +137,128 @@ void loop() {
 
 ## Operating Modes
 
-The device can operate in three distinct Modbus modes **independent of ModBee networking**. Choose the Modbus mode that fits your application:
+The ModBee Node-UIO supports **five distinct operating modes** that control how the device's outputs can be controlled and which protocols have access. These modes prevent conflicts where multiple protocols try to control the same outputs simultaneously.
 
-**Important Note:** The ModBee peer-to-peer protocol is entirely **optional**. You can:
-- Run **Modbus RTU only** (standard industrial mode) without enabling ModBee
-- Use ModBee networking for peer-to-peer device communication
-- Use RS485 CH2 as a generic serial interface alongside Modbus on CH1
-- Use MB_NONE mode to disable Modbus and use RS485 for custom protocols
+### Mode Overview
 
-### Mode 1: Standalone (MB_NONE)
-- **Use Case**: Local I/O control only, no Modbus communication
-- **Features**:
-  - Direct access to all I/O via C++ objects
-  - Web interface for remote monitoring
-  - Modbus UART disabled
-  - Optional: RS485 CH2 can be used as generic serial port
-- **Configuration**: `io = ESP32Modbee(..., MB_NONE, ...)`
+| Mode | Modbus RTU | ModBee Protocol | Output Control | Use Case |
+|------|------------|-----------------|---------------|----------|
+| `MB_NONE` | ❌ Disabled | ✅ Optional | Local only | Standalone device |
+| `MB_SLAVE` | ✅ Slave mode | ✅ Optional | Modbus master | Industrial controller |
+| `MB_MASTER` | ✅ Master mode | ✅ Optional | Local only | Control other devices |
+| `MB_REMOTE_IO` | ✅ Master mode | ❌ Disabled | Modbus master | Remote I/O for PLC |
+| `MBEE_REMOTE_IO` | ❌ Disabled | ✅ Required | ModBee network | Distributed I/O network |
+
+### Detailed Mode Explanations
+
+#### `MB_NONE` - Standalone Mode
+- **Modbus RTU**: Completely disabled
+- **ModBee Protocol**: Can be enabled (optional)
+- **Output Control**: Local application only
+- **Use Case**: Standalone device with local control, no network protocols
+- **RS485 Usage**: Both channels available for custom serial protocols
 
 ```cpp
-// Standalone mode usage
-io.DO01 = 1;              // Set digital output
-if (io.DI01) {            // Read digital input
-  int voltage = io.AI01_Scaled;  // Read analog input (mV)
-  io.AO01_Scaled = 5000;         // Write analog output (5V)
-}
+ESP32Modbee io(MB_NONE, rx1, tx1, id1, rx2, tx2, id2, baud1, config1, baud2, config2);
+// - No Modbus communication
+// - ModBee can still be used if pins configured
+// - Outputs controlled only by local code: io.DO01 = true;
+// - Cannot be controlled by remote Modbus or ModBee masters
 ```
 
-### Mode 2: Modbus Slave (MB_SLAVE)
-- **Use Case**: Controlled by external Modbus master
-- **Features**:
-  - Responds to Modbus read/write requests
-  - Example: PLC or industrial controller as master
-  - Modbus UART active with Slave role
-- **Configuration**: `io = ESP32Modbee(..., MB_SLAVE, ...)`
+#### `MB_SLAVE` - Modbus Slave Mode
+- **Modbus RTU**: Slave mode (responds to master requests)
+- **ModBee Protocol**: Can be enabled (optional)
+- **Output Control**: Modbus master controls outputs
+- **Use Case**: Standard industrial Modbus device controlled by PLC/SCADA
+- **RS485 Usage**: CH1 = Modbus RTU, CH2 = ModBee or custom serial
 
 ```cpp
-// Slave mode: Respond to Modbus requests
-// External master reads our registers and controls our outputs
-io.update();  // Process incoming Modbus requests
+ESP32Modbee io(MB_SLAVE, rx1, tx1, slaveId, rx2, tx2, modbeeId, baud1, config1, baud2, config2);
+// - Responds to Modbus read/write requests from master
+// - Master can control DO01-DO08 and AO01-AO02 via Modbus registers
+// - Local code can still read inputs but cannot write outputs (master has control)
+// - ModBee can run alongside for peer-to-peer communication
 ```
 
-**Modbus Register Map for Slave:**
-- **Coil Registers (writes)**: DO01-DO08 (addresses 0-7)
-- **Input Status Registers (reads)**: DI01-DI08 (addresses 0-7)
-- **Input Registers (reads)**: AI01-AI04 scaled/raw (addresses 0-7)
-- **Holding Registers (writes)**: AO01-AO02 scaled/raw (addresses 0-3)
-
-### Mode 3: Modbus Master (MB_MASTER)
-- **Use Case**: Control multiple slave nodes
-- **Features**:
-  - Poll and command multiple devices
-  - Read/write to Modbus slave registers
-  - Modbus UART active with Master role
-- **Configuration**: `io = ESP32Modbee(..., MB_MASTER, ...)`
+#### `MB_MASTER` - Modbus Master Mode
+- **Modbus RTU**: Master mode (polls slave devices)
+- **ModBee Protocol**: Can be enabled (optional)
+- **Output Control**: Local application only
+- **Use Case**: Controller that commands other Modbus devices
+- **RS485 Usage**: CH1 = Modbus RTU, CH2 = ModBee or custom serial
 
 ```cpp
-// Master mode: Poll slaves and control them
-void loop() {
-  io.update();
-  
-  uint8_t slaveId = 2;
+ESP32Modbee io(MB_MASTER, rx1, tx1, masterId, rx2, tx2, modbeeId, baud1, config1, baud2, config2);
+// - Can poll and control other Modbus slave devices
+// - Local code controls this device's outputs: io.DO01 = true;
+// - Cannot be controlled remotely (no slave functionality)
+// - Good for gateway applications or device controllers
+```
+
+#### `MB_REMOTE_IO` - Modbus Remote I/O Mode
+- **Modbus RTU**: Master mode with special remote I/O behavior
+- **ModBee Protocol**: Disabled (conflicts with Modbus)
+- **Output Control**: Modbus master controls outputs
+- **Use Case**: Remote I/O module for PLC systems
+- **RS485 Usage**: CH1 = Modbus RTU (remote I/O protocol)
+
+```cpp
+ESP32Modbee io(MB_REMOTE_IO, rx1, tx1, slaveId, rx2, tx2, modbeeId, baud1, config1, baud2, config2);
+// - Designed for remote I/O applications
+// - Modbus master has exclusive control of outputs
+// - Local code cannot write to outputs (master has priority)
+// - Optimized for PLC remote I/O modules
+// - ModBee protocol disabled to prevent conflicts
+```
+
+#### `MBEE_REMOTE_IO` - ModBee Remote I/O Mode
+- **Modbus RTU**: Disabled (conflicts with ModBee)
+- **ModBee Protocol**: Required and enabled
+- **Output Control**: ModBee network controls outputs
+- **Use Case**: Distributed I/O in ModBee peer-to-peer networks
+- **RS485 Usage**: Both channels used for ModBee protocol
+
+```cpp
+ESP32Modbee io(MBEE_REMOTE_IO, rx1, tx1, modbusId, rx2, tx2, modbeeId, baud1, config1, baud2, config2);
+// - Designed for ModBee distributed I/O networks
+// - ModBee network has exclusive control of outputs
+// - Local code cannot write to outputs (network has priority)
+// - Optimized for peer-to-peer I/O sharing
+// - Modbus disabled to prevent conflicts
+```
+
+### Output Control Priority System
+
+The ModBee Node-UIO implements a **priority system** to prevent multiple protocols from controlling outputs simultaneously:
+
+1. **Remote I/O modes** (`MB_REMOTE_IO`, `MBEE_REMOTE_IO`): Network protocols have exclusive control
+2. **Slave modes** (`MB_SLAVE`): Modbus master has control, local code can only read
+3. **Local modes** (`MB_NONE`, `MB_MASTER`): Local application has full control
+
+**This prevents conflicts where:**
+- A Modbus master tries to control outputs while local code also writes to them
+- ModBee network and Modbus both try to control the same outputs
+- Multiple masters fight for control of the same device
+
+### Choosing the Right Mode
+
+| Application | Recommended Mode | Why |
+|-------------|------------------|-----|
+| Standalone sensor/logger | `MB_NONE` | Local control only, no network conflicts |
+| PLC controlled device | `MB_SLAVE` | Standard Modbus slave for industrial control |
+| Device controller/gateway | `MB_MASTER` | Controls other devices, local output control |
+| PLC remote I/O module | `MB_REMOTE_IO` | Modbus master controls outputs exclusively |
+| Distributed I/O network | `MBEE_REMOTE_IO` | ModBee network controls outputs exclusively |
+| Custom protocol device | `MB_NONE` | Use RS485 channels for custom serial protocols |
+
+### Important Notes
+
+- **ModBee protocol is always optional** - you can use any mode with or without ModBee networking
+- **Remote I/O modes disable conflicting protocols** to prevent output control conflicts
+- **Local code can always read inputs** regardless of mode
+- **Output control is exclusive** - only one source can control outputs at a time
+- **RS485 channels can be repurposed** in `MB_NONE` mode for custom protocols
   
   // Read coils (digital inputs) from slave
   bool inputs[8];
@@ -230,21 +288,16 @@ void loop() {
 ```cpp
 ESP32Modbee(
   uint8_t mode,                      // MB_MASTER, MB_SLAVE, or MB_NONE
-  uint8_t ledPin = LED_PIN,          // GPIO 39
-  uint8_t sdaPin = 37,               // I2C SDA
-  uint8_t sclPin = 38,               // I2C SCL
-  uint8_t modbusRxPin = 18,          // UART1 RX
-  uint8_t modbusTxPin = 17,          // UART1 TX
-  uint8_t modbusId = 1,              // Modbus node ID
-  uint8_t modbeeRxPin = 16,          // UART2 RX
-  uint8_t modbeeTxPin = 15,          // UART2 TX
-  uint8_t modbeeId = 1,              // ModBee node ID
-  uint32_t baudrate1 = 115200,       // Modbus baud
-  uint32_t serialConfig1 = SERIAL_8N1,
-  HardwareSerial* serialPort1 = &Serial1,
-  uint32_t baudrate2 = 115200,       // ModBee baud
-  uint32_t serialConfig2 = SERIAL_8N1,
-  HardwareSerial* serialPort2 = &Serial2
+  uint8_t modbusRxPin,               // UART1 RX
+  uint8_t modbusTxPin,               // UART1 TX
+  uint8_t modbusId,                  // Modbus node ID
+  uint8_t modbeeRxPin,               // UART2 RX
+  uint8_t modbeeTxPin,               // UART2 TX
+  uint8_t modbeeId,                  // ModBee node ID
+  uint32_t baudrate1,                // Modbus baud
+  uint32_t serialConfig1,            // Modbus serial config
+  uint32_t baudrate2,                // ModBee baud
+  uint32_t serialConfig2             // ModBee serial config
 );
 ```
 
@@ -713,9 +766,9 @@ Mirror all digital inputs to outputs and map analog inputs to outputs:
 ```cpp
 #include <ESP32Modbee.h>
 
-ESP32Modbee io(MB_NONE, LED_PIN, 37, 38, 18, 17, 1, 16, 15, 5,
-               115200, SERIAL_8N1, &Serial1,
-               115200, SERIAL_8N1, &Serial2);
+ESP32Modbee io(MB_NONE, 18, 17, 1, 16, 15, 5,
+               115200, SERIAL_8N1,
+               115200, SERIAL_8N1);
 
 void setup() {
   Serial.begin(115200);
@@ -753,9 +806,9 @@ void loop() {
 ```cpp
 #include <ESP32Modbee.h>
 
-ESP32Modbee io(MB_MASTER, LED_PIN, 37, 38, 18, 17, 1, 16, 15, 5,
-               115200, SERIAL_8N1, &Serial1,
-               115200, SERIAL_8N1, &Serial2);
+ESP32Modbee io(MB_MASTER, 18, 17, 1, 16, 15, 5,
+               115200, SERIAL_8N1,
+               115200, SERIAL_8N1);
 
 #define NUM_SLAVES 3
 uint8_t slaveIds[NUM_SLAVES] = {10, 20, 30};
@@ -893,16 +946,16 @@ pio device monitor -e esp32s3
 ### Customization
 
 #### Changing Pin Assignments
-Edit constructor parameters:
+Note: LED pin (GPIO 39), I2C pins (SDA 37, SCL 38), and serial ports are now fixed defaults. Only Modbus/ModBee pins, IDs, and baud rates can be customized:
 ```cpp
 ESP32Modbee io(
   MB_NONE,
-  GPIO_NUM_39,        // Custom LED pin
-  GPIO_NUM_37,        // Custom SDA
-  GPIO_NUM_38,        // Custom SCL
-  GPIO_NUM_18,        // Custom Modbus RX
-  GPIO_NUM_17,        // Custom Modbus TX
-  ...
+  18, 17,             // Custom Modbus RX/TX pins
+  1,                  // Modbus ID
+  16, 15,             // Custom ModBee RX/TX pins
+  5,                  // ModBee ID
+  115200, SERIAL_8N1, // Modbus baud/config
+  115200, SERIAL_8N1  // ModBee baud/config
 );
 ```
 
@@ -910,25 +963,14 @@ ESP32Modbee io(
 ```cpp
 ESP32Modbee io(
   MB_SLAVE,
-  ...,
-  9600,               // Modbus baud (reduced for long distances)
-  SERIAL_8N1,
-  &Serial1,
-  9600,               // ModBee baud
-  SERIAL_8N1,
-  &Serial2
+  18, 17, 1, 16, 15, 5,
+  9600, SERIAL_8N1,   // Modbus baud (reduced for long distances)
+  9600, SERIAL_8N1    // ModBee baud
 );
 ```
 
-#### Changing Serial Ports
-```cpp
-ESP32Modbee io(
-  MB_NONE,
-  ...,
-  9600, SERIAL_8N1, &Serial0,  // Use Serial0 instead of Serial1
-  9600, SERIAL_8N1, &Serial2
-);
-```
+#### Serial Ports
+Serial ports are now fixed to Serial1 (Modbus) and Serial2 (ModBee). Cannot be changed.
 
 ### Troubleshooting
 

@@ -215,11 +215,29 @@ modbee-node-uio/
 
 ### Operating Modes
 
-| Mode | Use Case | Configuration |
-|------|----------|---|
-| **Standalone** | Web interface + local I/O | `io = ESP32Modbee(..., MB_NONE, ...)` |
-| **Slave** | Controlled by external master | `io = ESP32Modbee(..., MB_SLAVE, ...)` |
-| **Master** | Control multiple slaves | `io = ESP32Modbee(..., MB_MASTER, ...)` |
+The ModBee Node-UIO supports **five distinct operating modes** that control how outputs are controlled and which protocols have access:
+
+| Mode | Modbus RTU | ModBee Protocol | Output Control | Use Case |
+|------|------------|-----------------|---------------|----------|
+| `MB_NONE` | ❌ Disabled | ✅ Optional | Local only | Standalone device |
+| `MB_SLAVE` | ✅ Slave mode | ✅ Optional | Modbus master | Industrial controller |
+| `MB_MASTER` | ✅ Master mode | ✅ Optional | Local only | Control other devices |
+| `MB_REMOTE_IO` | ✅ Master mode | ❌ Disabled | Modbus master | Remote I/O for PLC |
+| `MBEE_REMOTE_IO` | ❌ Disabled | ✅ Required | ModBee network | Distributed I/O network |
+
+#### Mode Details
+
+**`MB_NONE` - Standalone Mode**: Local I/O control only, no network protocols. Both RS485 channels available for custom serial.
+
+**`MB_SLAVE` - Modbus Slave Mode**: Responds to Modbus master requests. Master controls outputs via Modbus registers.
+
+**`MB_MASTER` - Modbus Master Mode**: Polls and controls other Modbus slave devices. Local code controls this device's outputs.
+
+**`MB_REMOTE_IO` - Modbus Remote I/O Mode**: Special remote I/O mode for PLC systems. Modbus master has exclusive output control.
+
+**`MBEE_REMOTE_IO` - ModBee Remote I/O Mode**: Distributed I/O in ModBee peer-to-peer networks. Network has exclusive output control.
+
+**Output Conflict Prevention**: Remote I/O modes (`MB_REMOTE_IO`, `MBEE_REMOTE_IO`) prevent multiple protocols from controlling the same outputs simultaneously.
 
 ### Example: Master Reading Slaves
 
