@@ -582,20 +582,20 @@ size_t get_var_size(size_t idx)
         return 0;
     }
     switch (debug_vars[idx].type) {
+    case REAL_ENUM:
+        return sizeof(REAL);
     case INT_ENUM:
         return sizeof(INT);
     case TIME_ENUM:
         return sizeof(TIME);
-    case SINT_ENUM:
-        return sizeof(SINT);
     case BYTE_ENUM:
         return sizeof(BYTE);
     case WORD_ENUM:
         return sizeof(WORD);
+    case SINT_ENUM:
+        return sizeof(SINT);
     case BOOL_ENUM:
         return sizeof(BOOL);
-    case REAL_ENUM:
-        return sizeof(REAL);
     default:
         return 0;
     }
@@ -606,20 +606,20 @@ void *get_var_addr(size_t idx)
     void *ptr = debug_vars[idx].ptr;
 
     switch (debug_vars[idx].type) {
+    case REAL_ENUM:
+        return (void *)&((__IEC_REAL_t *) ptr)->value;
     case INT_ENUM:
         return (void *)&((__IEC_INT_t *) ptr)->value;
     case TIME_ENUM:
         return (void *)&((__IEC_TIME_t *) ptr)->value;
-    case SINT_ENUM:
-        return (void *)&((__IEC_SINT_t *) ptr)->value;
     case BYTE_ENUM:
         return (void *)&((__IEC_BYTE_t *) ptr)->value;
     case WORD_ENUM:
         return (void *)&((__IEC_WORD_t *) ptr)->value;
+    case SINT_ENUM:
+        return (void *)&((__IEC_SINT_t *) ptr)->value;
     case BOOL_ENUM:
         return (void *)&((__IEC_BOOL_t *) ptr)->value;
-    case REAL_ENUM:
-        return (void *)&((__IEC_REAL_t *) ptr)->value;
     default:
         return 0;
     }
@@ -632,6 +632,12 @@ void force_var(size_t idx, bool forced, void *val)
     if (forced) {
         size_t var_size = get_var_size(idx);
         switch (debug_vars[idx].type) {
+        case REAL_ENUM: {
+            memcpy(&((__IEC_REAL_t *) ptr)->value, val, var_size);
+            ((__IEC_REAL_t *) ptr)->flags |= __IEC_FORCE_FLAG;
+            break;
+        }
+    
         case INT_ENUM: {
             memcpy(&((__IEC_INT_t *) ptr)->value, val, var_size);
             ((__IEC_INT_t *) ptr)->flags |= __IEC_FORCE_FLAG;
@@ -641,12 +647,6 @@ void force_var(size_t idx, bool forced, void *val)
         case TIME_ENUM: {
             memcpy(&((__IEC_TIME_t *) ptr)->value, val, var_size);
             ((__IEC_TIME_t *) ptr)->flags |= __IEC_FORCE_FLAG;
-            break;
-        }
-    
-        case SINT_ENUM: {
-            memcpy(&((__IEC_SINT_t *) ptr)->value, val, var_size);
-            ((__IEC_SINT_t *) ptr)->flags |= __IEC_FORCE_FLAG;
             break;
         }
     
@@ -662,15 +662,15 @@ void force_var(size_t idx, bool forced, void *val)
             break;
         }
     
-        case BOOL_ENUM: {
-            memcpy(&((__IEC_BOOL_t *) ptr)->value, val, var_size);
-            ((__IEC_BOOL_t *) ptr)->flags |= __IEC_FORCE_FLAG;
+        case SINT_ENUM: {
+            memcpy(&((__IEC_SINT_t *) ptr)->value, val, var_size);
+            ((__IEC_SINT_t *) ptr)->flags |= __IEC_FORCE_FLAG;
             break;
         }
     
-        case REAL_ENUM: {
-            memcpy(&((__IEC_REAL_t *) ptr)->value, val, var_size);
-            ((__IEC_REAL_t *) ptr)->flags |= __IEC_FORCE_FLAG;
+        case BOOL_ENUM: {
+            memcpy(&((__IEC_BOOL_t *) ptr)->value, val, var_size);
+            ((__IEC_BOOL_t *) ptr)->flags |= __IEC_FORCE_FLAG;
             break;
         }
     
@@ -679,14 +679,14 @@ void force_var(size_t idx, bool forced, void *val)
         }
     } else {
         switch (debug_vars[idx].type) {
+        case REAL_ENUM:
+            ((__IEC_REAL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
+            break;
         case INT_ENUM:
             ((__IEC_INT_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
             break;
         case TIME_ENUM:
             ((__IEC_TIME_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
-            break;
-        case SINT_ENUM:
-            ((__IEC_SINT_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
             break;
         case BYTE_ENUM:
             ((__IEC_BYTE_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
@@ -694,11 +694,11 @@ void force_var(size_t idx, bool forced, void *val)
         case WORD_ENUM:
             ((__IEC_WORD_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
             break;
+        case SINT_ENUM:
+            ((__IEC_SINT_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
+            break;
         case BOOL_ENUM:
             ((__IEC_BOOL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
-            break;
-        case REAL_ENUM:
-            ((__IEC_REAL_t *) ptr)->flags &= ~__IEC_FORCE_FLAG;
             break;
         default:
             break;

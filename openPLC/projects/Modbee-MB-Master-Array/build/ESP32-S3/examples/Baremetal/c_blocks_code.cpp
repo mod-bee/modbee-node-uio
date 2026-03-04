@@ -1097,7 +1097,6 @@ void modbee_read_array_loop(MODBEE_READ_ARRAY_VARS *vars)
     ctx->last_req = true;
     DONE = false;
     ERROR = false;
-    modbee_read_array_clear_outputs(vars);
 
     NODE_ONLINE = io.mbee.isNodeKnown(NODE_ID);
     if (!NODE_ONLINE)
@@ -1105,6 +1104,7 @@ void modbee_read_array_loop(MODBEE_READ_ARRAY_VARS *vars)
       ERROR = true;
       DONE = false;
       reset_modbee_read_array_ctx(ctx);
+      modbee_read_array_clear_outputs(vars);  // Clear on error
       return;
     }
 
@@ -1114,6 +1114,7 @@ void modbee_read_array_loop(MODBEE_READ_ARRAY_VARS *vars)
       ERROR = true;
       DONE = false;
       reset_modbee_read_array_ctx(ctx);
+      modbee_read_array_clear_outputs(vars);  // Clear on error
       return;
     }
 
@@ -1123,6 +1124,7 @@ void modbee_read_array_loop(MODBEE_READ_ARRAY_VARS *vars)
       ERROR = true;
       DONE = false;
       reset_modbee_read_array_ctx(ctx);
+      modbee_read_array_clear_outputs(vars);  // Clear on error
       return;
     }
 
@@ -1159,6 +1161,7 @@ void modbee_read_array_loop(MODBEE_READ_ARRAY_VARS *vars)
       ERROR = true;
       DONE = false;
       reset_modbee_read_array_ctx(ctx);
+      modbee_read_array_clear_outputs(vars);  // Clear on error
       return;
     }
 
@@ -2540,7 +2543,6 @@ void modbus_read_array_loop(MODBUS_READ_ARRAY_VARS *vars)
     ctx->last_req = true;
     DONE = false;
     ERROR = false;
-    modbus_read_array_clear_outputs(vars);
 
     const uint8_t len = (uint8_t)LENGTH;
     if (len == 0 || len > MODBUS_READ_ARRAY_MAX_ELEMENTS)
@@ -2548,6 +2550,7 @@ void modbus_read_array_loop(MODBUS_READ_ARRAY_VARS *vars)
       ERROR = true;
       DONE = true;
       reset_modbus_read_array_ctx(ctx);
+      modbus_read_array_clear_outputs(vars);  // Clear on error
       return;
     }
 
@@ -2574,6 +2577,8 @@ void modbus_read_array_loop(MODBUS_READ_ARRAY_VARS *vars)
       ctx->started = false;
       if (!ERROR)
         modbus_read_array_copy_results(vars, ctx);
+      else
+        modbus_read_array_clear_outputs(vars);  // Clear on error
     }
     return;
   }

@@ -183,7 +183,6 @@ void loop()
     ctx->last_req = true;
     DONE = false;
     ERROR = false;
-    modbee_read_array_clear_outputs(vars);
 
     NODE_ONLINE = io.mbee.isNodeKnown(NODE_ID);
     if (!NODE_ONLINE)

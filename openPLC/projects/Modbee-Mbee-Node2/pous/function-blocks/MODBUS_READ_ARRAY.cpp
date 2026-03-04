@@ -228,7 +228,6 @@ void loop()
     ctx->last_req = true;
     DONE = false;
     ERROR = false;
-    modbus_read_array_clear_outputs(vars);
 
     const uint8_t len = (uint8_t)LENGTH;
     if (len == 0 || len > MODBUS_READ_ARRAY_MAX_ELEMENTS)
@@ -236,6 +235,7 @@ void loop()
       ERROR = true;
       DONE = true;
       reset_modbus_read_array_ctx(ctx);
+
       return;
     }
 
@@ -262,6 +262,7 @@ void loop()
       ctx->started = false;
       if (!ERROR)
         modbus_read_array_copy_results(vars, ctx);
+      // else: leave outputs unchanged on error
     }
     return;
   }
